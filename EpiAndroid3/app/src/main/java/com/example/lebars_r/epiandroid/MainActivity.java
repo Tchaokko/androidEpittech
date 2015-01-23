@@ -40,8 +40,6 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 }
         public void LogMe(View view) {
-            //setContentView(R.layout.layout3);
-
             RequestParams identifiant = new RequestParams();
             log = (EditText)findViewById(R.id.login_field);
             pwd = (EditText)findViewById(R.id.password_field);
@@ -54,6 +52,7 @@ public class MainActivity extends ActionBarActivity {
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     Log.d("--SUCCESS--", "SUCCESS");
                     err.setVisibility(View.INVISIBLE);
+
                     String response = new String(responseBody);
                     try{
                         JSONObject token = new JSONObject(response);
@@ -95,7 +94,6 @@ public class MainActivity extends ActionBarActivity {
 
                 }
             });
-
         }
 
     @Override

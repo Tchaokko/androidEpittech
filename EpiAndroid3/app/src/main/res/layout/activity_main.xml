@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/login_label"
         android:editable="false"
-        android:text="Login"
+        android:text="@string/string_log_label"
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/button3"
         android:layout_toStartOf="@+id/button3" />
@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/password_label"
         android:editable="false"
-        android:text="Password"
+        android:text="@string/string_pwd_label"
         android:layout_below="@+id/login_field"
         android:layout_alignLeft="@+id/password_field"
         android:layout_alignStart="@+id/password_field" />
