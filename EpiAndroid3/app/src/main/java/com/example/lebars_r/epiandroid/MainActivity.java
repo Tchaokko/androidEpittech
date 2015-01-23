@@ -1,5 +1,6 @@
 package com.example.lebars_r.epiandroid;
 
+import android.content.Intent;
 import android.preference.PreferenceActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -63,7 +64,11 @@ public class MainActivity extends ActionBarActivity {
                     }
                     Log.d("--TOKEN--", userToken);
                     RequestParams testParam = new RequestParams();
-                    testParam.put("token", userToken);
+
+                    testParam.put("token",userToken);
+                    Intent profileIntent = new Intent(MainActivity.this, Profile.class);
+                    startActivity(profileIntent);
+                    //setContentView(R.layout.activity_profile);
                     client.post("https://epitech-api.herokuapp.com/infos", testParam, new AsyncHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
