@@ -68,7 +68,7 @@
         android:layout_below="@+id/button3"
         android:layout_alignLeft="@+id/login_label"
         android:layout_alignStart="@+id/login_label"
-        android:background="#ff92deff"
-        android:text="Connexion error" />
+        android:text="Connexion error"
+        android:background="#ffffe000" />
 
 </RelativeLayout>
