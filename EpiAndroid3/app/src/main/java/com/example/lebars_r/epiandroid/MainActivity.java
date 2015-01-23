@@ -1,0 +1,89 @@
+package com.example.lebars_r.epiandroid;
+
+import android.preference.PreferenceActivity;
+import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class MainActivity extends ActionBarActivity {
+
+    EditText log;
+    EditText pwd;
+    EditText err;
+
+    private final List<JSONObject> list = new ArrayList<JSONObject>();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+}
+        public void LogMe(View view) {
+            //setContentView(R.layout.layout3);
+
+            AsyncHttpClient client = new AsyncHttpClient();
+            RequestParams identifiant = new RequestParams();
+            log = (EditText)findViewById(R.id.login_field);
+            pwd = (EditText)findViewById(R.id.password_field);
+            err = (EditText)findViewById(R.id.error_label);
+            identifiant .put("login", log.getText().toString());
+            identifiant .put("password", pwd.getText().toString());
+            client.post("https://epitech-api.herokuapp.com/login", identifiant, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    Log.d("--SUCCESS--", "SUCCESS");
+                    err.setVisibility(View.INVISIBLE);
+                    //findViewById(R.id.error_label).setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    err.setVisibility(View.VISIBLE);
+                    pwd.setText("");
+                    Log.d("--FAILURE--", "ERROR");
+
+                }
+            });
+
+        }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+}
