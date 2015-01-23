@@ -64,6 +64,7 @@ public class MainActivity extends ActionBarActivity {
                     Log.d("--TOKEN--", userToken);
                     RequestParams testParam = new RequestParams();
                     testParam.put("token",userToken);
+                   // setContentView(R.layout.activity_profile);
                     client.post("https://epitech-api.herokuapp.com/infos", testParam, new AsyncHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
