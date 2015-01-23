@@ -29,6 +29,9 @@ public class MainActivity extends ActionBarActivity {
     EditText log;
     EditText pwd;
     EditText err;
+    String userToken;
+    AsyncHttpClient client = new AsyncHttpClient();
+
 
     private final List<JSONObject> list = new ArrayList<JSONObject>();
     @Override
@@ -37,18 +40,50 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 }
         public void LogMe(View view) {
-            AsyncHttpClient client = new AsyncHttpClient();
             RequestParams identifiant = new RequestParams();
             log = (EditText)findViewById(R.id.login_field);
             pwd = (EditText)findViewById(R.id.password_field);
             err = (EditText)findViewById(R.id.error_label);
             identifiant .put("login", log.getText().toString());
             identifiant .put("password", pwd.getText().toString());
+
             client.post("https://epitech-api.herokuapp.com/login", identifiant, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     Log.d("--SUCCESS--", "SUCCESS");
                     err.setVisibility(View.INVISIBLE);
+
+                    String response = new String(responseBody);
+                    try{
+                        JSONObject token = new JSONObject(response);
+                        userToken = token.getString("token");
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    Log.d("--TOKEN--", userToken);
+                    RequestParams testParam = new RequestParams();
+                    testParam.put("token",userToken);
+                    client.post("https://epitech-api.herokuapp.com/infos", testParam, new AsyncHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                            String response2 = new String(responseBody);
+                            try{
+                                JSONObject info = new JSONObject(response2);
+                                String check = info.getString("board");
+                                Log.d("--INFOS--", check);
+                            }
+                            catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                            Log.d("--FAILURE INFOS--", "Infos failure" );
+                        }
+                    });
+                    //findViewById(R.id.error_label).setVisibility(View.INVISIBLE);
                 }
 
                 @Override
