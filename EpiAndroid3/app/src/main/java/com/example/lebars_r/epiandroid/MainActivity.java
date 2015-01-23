@@ -37,8 +37,6 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 }
         public void LogMe(View view) {
-            //setContentView(R.layout.layout3);
-
             AsyncHttpClient client = new AsyncHttpClient();
             RequestParams identifiant = new RequestParams();
             log = (EditText)findViewById(R.id.login_field);
@@ -51,7 +49,6 @@ public class MainActivity extends ActionBarActivity {
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     Log.d("--SUCCESS--", "SUCCESS");
                     err.setVisibility(View.INVISIBLE);
-                    //findViewById(R.id.error_label).setVisibility(View.INVISIBLE);
                 }
 
                 @Override
@@ -62,7 +59,6 @@ public class MainActivity extends ActionBarActivity {
 
                 }
             });
-
         }
 
     @Override
