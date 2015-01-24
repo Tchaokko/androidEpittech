@@ -69,25 +69,7 @@ public class MainActivity extends ActionBarActivity {
                     Intent profileIntent = new Intent(MainActivity.this, Profile.class);
                     startActivity(profileIntent);
                     //setContentView(R.layout.activity_profile);
-                    client.post("https://epitech-api.herokuapp.com/infos", testParam, new AsyncHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                            String response2 = new String(responseBody);
-                            try{
-                                JSONObject info = new JSONObject(response2);
-                                String check = info.getString("board");
-                                Log.d("--INFOS--", check);
-                            }
-                            catch (Exception e){
-                                e.printStackTrace();
-                            }
-                        }
 
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                            Log.d("--FAILURE INFOS--", "Infos failure" );
-                        }
-                    });
                     //findViewById(R.id.error_label).setVisibility(View.INVISIBLE);
                 }
 
