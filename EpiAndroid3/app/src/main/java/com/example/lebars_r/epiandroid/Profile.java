@@ -28,6 +28,7 @@ import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -93,24 +94,27 @@ public class Profile extends ActionBarActivity
         });
     }
 
-    protected void recupHistory(){
+    protected void recupMessage(){
         RequestParams Param = new RequestParams();
         Param.put("token", _user.getToken());
-        client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
+        client.post("https://epitech-api.herokuapp.com/messages", Param, new JsonHttpResponseHandler() {
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
                 Log.d("--SUCCESS--", "INFO BEGIN");
                 JSONObject data;
                 try {
-                    Log.d("--HISTORY--", "0");
-                    data = response.getJSONObject("history");
-                    Log.d("--HISTORY--", "1");
-                    TextView tmp = (TextView) findViewById(R.id.history);
-                    tmp.setText("title :" + data.getString("title"));
-                    Log.d("--HISTORY--", "2");
-
+                    TextView tmp = (TextView) findViewById(R.id.aff_message);
+                    tmp.setText("Notification : ");
+                    for (int i = 0; i < response.length(); ++i){
+                        Log.d("--JSON--", "JSON 1");
+                        data = response.getJSONObject(i);
+                        Log.d("--JSON--", "JSON 2");
+                        String temp = data.getString("title");
+                        temp = temp.replaceAll("<([^<]*)>", "");
+                        tmp.setText(tmp.getText()+ "\n" + temp);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -146,7 +150,7 @@ public class Profile extends ActionBarActivity
         StrictMode.ThreadPolicy pol = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(pol);
         affPicture();
-        //recupHistory();
+        recupMessage();
         RequestParams Param = new RequestParams();
         Log.d("--TOKEN--", _user.getToken());
         Param.put("token", _user.getToken());
@@ -165,11 +169,7 @@ public class Profile extends ActionBarActivity
                     tmp = (TextView)findViewById(R.id.aff_uid);
                     tmp.setText("uid :" + data.getString("uid"));
                     Log.d("--HISTORY--", "0");
-                    data = response.getJSONObject("history");
-                    Log.d("--HISTORY--", "1");
-                    tmp = (TextView) findViewById(R.id.history);
-                    tmp.setText("title :" + data.getString("title"));
-                    Log.d("--INFO--", "6");
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
