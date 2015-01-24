@@ -66,12 +66,9 @@ public class MainActivity extends Activity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        RequestParams testParam = new RequestParams();
-                        testParam.put("token",userToken);
                         Intent profileIntent = new Intent(MainActivity.this, Profile.class);
                         startActivity(profileIntent);
                         MainActivity.this.finish();
-
                     }
 
                     @Override
