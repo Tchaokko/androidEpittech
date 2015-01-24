@@ -3,6 +3,9 @@ package com.example.lebars_r.epiandroid;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -19,11 +22,17 @@ import android.widget.ImageView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 public class Profile extends ActionBarActivity
@@ -49,23 +58,25 @@ public class Profile extends ActionBarActivity
         RequestParams Param = new RequestParams();
         Param.put("token", _user.getToken());
         Param.put("login", _user.getLogin());
-        client.get("https://epitech-api.herokuapp.com/photo", Param, new JsonHttpResponseHandler() {
+       client.get("https://epitech-api.herokuapp.com/photo", Param, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 Log.d("--SUCCESS--", "picture");
-                ImageView  tmp = (ImageView) findViewById(R.id.profile_picture);
+                ImageView tmp = (ImageView) findViewById(R.id.profile_picture);
                 tmp.setVisibility(View.VISIBLE);
                 try {
-                    Bitmap bitmap;
                     _user.setPhoto(response.getString("url"));
-                    _recup.setUrl(_user.getPhoto());
-                    _recup.execute();
-                    //_recup.doInBackground();
-                    if ((bitmap = _recup.getPicture()) != null) {
-                        tmp.setImageBitmap(bitmap);
-                    }
+                    URL url = new URL(_user.getPhoto());
+                    Object data = url.getContent();
+                    InputStream stream = (InputStream) data;
+                    Drawable img = Drawable.createFromStream(stream, "src");
+                    tmp.setImageDrawable(img);
 
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -93,14 +104,18 @@ public class Profile extends ActionBarActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        RequestParams Param = new RequestParams();
+
         Intent intent = getIntent();
         _user.setLogin(intent.getStringExtra("login"));
         _user.setPassword(intent.getStringExtra("pwd"));
         _user.setToken(intent.getStringExtra("token"));
+        StrictMode.ThreadPolicy pol = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(pol);
+        affPicture();
+        RequestParams Param = new RequestParams();
         Log.d("--TOKEN--", _user.getToken());
         Param.put("token", _user.getToken());
-        affPicture();
+
         client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
 
             @Override

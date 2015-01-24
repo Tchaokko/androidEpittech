@@ -11,6 +11,15 @@ public class User {
     private String Password;
     private String Token;
     private String  Photo;
+    private String uid;
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
     public void setLogin(String _log){
         Login = _log;

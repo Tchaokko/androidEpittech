@@ -15,5 +15,6 @@
     <string name="action_example">Example action</string>
     <string name="title_activity_profile2">Profile2</string>
     <string name="hello_world">Hello world!</string>
+    <string name="description_photo">Profile_photo</string>
 
 </resources>
