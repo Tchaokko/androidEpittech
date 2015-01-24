@@ -3,29 +3,21 @@ package com.example.lebars_r.epiandroid;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -33,19 +25,13 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 
 public class Profile extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
     private RequestParams Param = new RequestParams();
     private AsyncHttpClient client = new AsyncHttpClient();
     private User _user = new User();
-
+    private RecupImage _recup = new RecupImage();
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -56,24 +42,7 @@ public class Profile extends ActionBarActivity
      */
     private CharSequence mTitle;
 
-    private Bitmap getBitmap(String url) {
-        URL my_url = null;
-        try {
-            my_url = new URL(url);
-            HttpURLConnection my_connection = (HttpURLConnection) my_url.openConnection();
-            my_connection.setDoInput(true);
-            my_connection.connect();
-            InputStream input = my_connection.getInputStream();
-            Bitmap result = BitmapFactory.decodeStream(input);
-            return result;
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     private void affPicture()
     {
@@ -90,7 +59,10 @@ public class Profile extends ActionBarActivity
                 try {
                     Bitmap bitmap;
                     _user.setPhoto(response.getString("url"));
-                    if ((bitmap = getBitmap(_user.getPhoto())) != null) {
+                    _recup.setUrl(_user.getPhoto());
+                    _recup.execute();
+                    //_recup.doInBackground();
+                    if ((bitmap = _recup.getPicture()) != null) {
                         tmp.setImageBitmap(bitmap);
                     }
 
