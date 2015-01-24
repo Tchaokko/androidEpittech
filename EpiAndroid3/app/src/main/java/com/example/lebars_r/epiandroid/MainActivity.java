@@ -1,7 +1,12 @@
 package com.example.lebars_r.epiandroid;
 
+import com.loopj.android.http.RequestParams;
+
+import android.app.Activity;
+
 import android.content.Intent;
 import android.preference.PreferenceActivity;
+import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     EditText log;
     EditText pwd;
@@ -53,7 +58,6 @@ public class MainActivity extends ActionBarActivity {
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     Log.d("--SUCCESS--", "SUCCESS");
                     err.setVisibility(View.INVISIBLE);
-
                     String response = new String(responseBody);
                     try{
                         JSONObject token = new JSONObject(response);
@@ -62,15 +66,32 @@ public class MainActivity extends ActionBarActivity {
                     catch (Exception e){
                         e.printStackTrace();
                     }
+
                     Log.d("--TOKEN--", userToken);
                     RequestParams testParam = new RequestParams();
 
                     testParam.put("token",userToken);
                     Intent profileIntent = new Intent(MainActivity.this, Profile.class);
                     startActivity(profileIntent);
-                    //setContentView(R.layout.activity_profile);
 
-                    //findViewById(R.id.error_label).setVisibility(View.INVISIBLE);
+                    client.post("https://epitech-api.herokuapp.com/infos", testParam, new AsyncHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                            String response2 = new String(responseBody);
+                            try {
+                                JSONObject info = new JSONObject(response2);
+                                String check = info.getString("board");
+                                Log.d("--INFOS--", check);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                            Log.d("--FAILURE INFOS--", "Infos failure");
+                        }
+                    });
                 }
 
                 @Override

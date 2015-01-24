@@ -13,5 +13,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
+    <string name="title_activity_profile2">Profile2</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>
