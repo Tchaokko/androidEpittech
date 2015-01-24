@@ -10,8 +10,17 @@ public class User {
     private String Login;
     private String Password;
     private String Token;
-    private String  Photo;
+    private String Photo;
     private String uid;
+    private String logtime;
+
+    public String getLogtime() {
+        return logtime;
+    }
+
+    public void setLogtime(String logtime) {
+        this.logtime = logtime;
+    }
 
     public String getUid() {
         return uid;

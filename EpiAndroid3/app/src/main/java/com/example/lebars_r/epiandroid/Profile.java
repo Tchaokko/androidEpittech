@@ -18,7 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -66,7 +68,7 @@ public class Profile extends ActionBarActivity
                 ImageView tmp = (ImageView) findViewById(R.id.profile_picture);
                 tmp.setVisibility(View.VISIBLE);
                 try {
-                    _user.setPhoto(response.getString("url").replaceAll(" ",""));
+                    _user.setPhoto(response.getString("url").replaceAll(" ", ""));
                     Log.d("--URL--", _user.getPhoto());
                     URL url = new URL(_user.getPhoto());
                     Object data = url.getContent();
@@ -116,17 +118,21 @@ public class Profile extends ActionBarActivity
         RequestParams Param = new RequestParams();
         Log.d("--TOKEN--", _user.getToken());
         Param.put("token", _user.getToken());
-
         client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
+                Log.d("--SUCCESS--", "INFO BEGIN");
                 JSONObject data;
                 try {
-                    data = response.getJSONObject("info");
-                   // _user.setPhoto((android.media.Image) data.get("picture"));
-                    //Log.d("--LOGIN--", );
+                    data = response.getJSONObject("infos");
+                    TextView tmp = (TextView) findViewById(R.id.aff_login);
+                    tmp.setText("login : " + _user.getLogin());
+                    tmp = (TextView)findViewById(R.id.aff_uid);
+                    tmp.setText("uid :" + data.getString("uid"));
+                    Log.d("--INFO--", "6");
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
