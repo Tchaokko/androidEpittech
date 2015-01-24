@@ -66,7 +66,7 @@ public class Profile extends ActionBarActivity
                 ImageView tmp = (ImageView) findViewById(R.id.profile_picture);
                 tmp.setVisibility(View.VISIBLE);
                 try {
-                    _user.setPhoto(response.getString("url"));
+                    _user.setPhoto(response.getString("url").replaceAll(" ",""));
                     Log.d("--URL--", _user.getPhoto());
                     URL url = new URL(_user.getPhoto());
                     Object data = url.getContent();
