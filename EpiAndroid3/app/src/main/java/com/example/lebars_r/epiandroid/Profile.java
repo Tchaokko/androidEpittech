@@ -93,6 +93,37 @@ public class Profile extends ActionBarActivity
         });
     }
 
+    protected void recupHistory(){
+        RequestParams Param = new RequestParams();
+        Param.put("token", _user.getToken());
+        client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.d("--SUCCESS--", "INFO BEGIN");
+                JSONObject data;
+                try {
+                    Log.d("--HISTORY--", "0");
+                    data = response.getJSONObject("history");
+                    Log.d("--HISTORY--", "1");
+                    TextView tmp = (TextView) findViewById(R.id.history);
+                    tmp.setText("title :" + data.getString("title"));
+                    Log.d("--HISTORY--", "2");
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("--FAILURE INFOS--", "Infos failure");
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,6 +146,7 @@ public class Profile extends ActionBarActivity
         StrictMode.ThreadPolicy pol = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(pol);
         affPicture();
+        //recupHistory();
         RequestParams Param = new RequestParams();
         Log.d("--TOKEN--", _user.getToken());
         Param.put("token", _user.getToken());
@@ -129,8 +161,14 @@ public class Profile extends ActionBarActivity
                     data = response.getJSONObject("infos");
                     TextView tmp = (TextView) findViewById(R.id.aff_login);
                     tmp.setText("login : " + _user.getLogin());
+
                     tmp = (TextView)findViewById(R.id.aff_uid);
                     tmp.setText("uid :" + data.getString("uid"));
+                    Log.d("--HISTORY--", "0");
+                    data = response.getJSONObject("history");
+                    Log.d("--HISTORY--", "1");
+                    tmp = (TextView) findViewById(R.id.history);
+                    tmp.setText("title :" + data.getString("title"));
                     Log.d("--INFO--", "6");
 
                 } catch (JSONException e) {
