@@ -2,6 +2,9 @@ package com.example.lebars_r.epiandroid;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -18,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -29,14 +33,18 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 
 public class Profile extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
-    RequestParams Param = new RequestParams();
-    AsyncHttpClient client = new AsyncHttpClient();
-    String login;
-    String pwd;
-    String token;
+    private RequestParams Param = new RequestParams();
+    private AsyncHttpClient client = new AsyncHttpClient();
+    private User _user = new User();
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -47,6 +55,57 @@ public class Profile extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+
+    private Bitmap getBitmap(String url) {
+        URL my_url = null;
+        try {
+            my_url = new URL(url);
+            HttpURLConnection my_connection = (HttpURLConnection) my_url.openConnection();
+            my_connection.setDoInput(true);
+            my_connection.connect();
+            InputStream input = my_connection.getInputStream();
+            Bitmap result = BitmapFactory.decodeStream(input);
+            return result;
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void affPicture()
+    {
+        RequestParams Param = new RequestParams();
+        Param.put("token", _user.getToken());
+        Param.put("login", _user.getLogin());
+        client.get("https://epitech-api.herokuapp.com/photo", Param, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.d("--SUCCESS--", "picture");
+                ImageView  tmp = (ImageView) findViewById(R.id.profile_picture);
+                tmp.setVisibility(View.VISIBLE);
+                try {
+                    Bitmap bitmap;
+                    _user.setPhoto(response.getString("url"));
+                    if ((bitmap = getBitmap(_user.getPhoto())) != null) {
+                        tmp.setImageBitmap(bitmap);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("--ERROR--", "picture");
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,23 +122,23 @@ public class Profile extends ActionBarActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         RequestParams Param = new RequestParams();
-       // Param.put("token", userToken);
-
         Intent intent = getIntent();
-        login = intent.getStringExtra("login");
-        pwd = intent.getStringExtra("pwd");
-        token = intent.getStringExtra("token");
-        Log.d("--TOKEN--", token);
-        Param.put("token", token);
+        _user.setLogin(intent.getStringExtra("login"));
+        _user.setPassword(intent.getStringExtra("pwd"));
+        _user.setToken(intent.getStringExtra("token"));
+        Log.d("--TOKEN--", _user.getToken());
+        Param.put("token", _user.getToken());
+        affPicture();
         client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                String check = null;
+                JSONObject data;
                 try {
-                    check = response.getString("board");
-                    Log.d("--INFOS--", check);
+                    data = response.getJSONObject("info");
+                   // _user.setPhoto((android.media.Image) data.get("picture"));
+                    //Log.d("--LOGIN--", );
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
