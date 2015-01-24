@@ -24,6 +24,7 @@ import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -45,7 +46,44 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 }
-        public void LogMe(View view) {
+            public void LogMe(View view) {
+                RequestParams identifiant = new RequestParams();
+                log = (EditText)findViewById(R.id.login_field);
+                pwd = (EditText)findViewById(R.id.password_field);
+                err = (EditText)findViewById(R.id.error_label);
+                identifiant .put("login", log.getText().toString());
+                identifiant .put("password", pwd.getText().toString());
+
+                client.post("https://epitech-api.herokuapp.com/login", identifiant, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
+                        err.setVisibility(View.INVISIBLE);
+                        Log.d("--SUCCESS--", "SUCCESS");
+                        try {
+                            userToken = response.getString("token");
+                            Log.d("--TOKEN--", userToken);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        RequestParams testParam = new RequestParams();
+                        testParam.put("token",userToken);
+                        Intent profileIntent = new Intent(MainActivity.this, Profile.class);
+                        startActivity(profileIntent);
+                        MainActivity.this.finish();
+
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        super.onFailure(statusCode, headers, responseString, throwable);
+                        err.setVisibility(View.VISIBLE);
+                        pwd.setText("");
+                        Log.d("--FAILURE--", "ERROR");
+                    }
+                });
+                }
+        /*public void LogMe(View view) {
             RequestParams identifiant = new RequestParams();
             log = (EditText)findViewById(R.id.login_field);
             pwd = (EditText)findViewById(R.id.password_field);
@@ -69,7 +107,6 @@ public class MainActivity extends Activity {
 
                     Log.d("--TOKEN--", userToken);
                     RequestParams testParam = new RequestParams();
-
                     testParam.put("token",userToken);
                     Intent profileIntent = new Intent(MainActivity.this, Profile.class);
                     startActivity(profileIntent);
@@ -102,7 +139,7 @@ public class MainActivity extends Activity {
 
                 }
             });
-        }
+        }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
