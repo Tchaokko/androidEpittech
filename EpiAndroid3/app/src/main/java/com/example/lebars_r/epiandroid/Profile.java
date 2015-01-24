@@ -67,6 +67,7 @@ public class Profile extends ActionBarActivity
                 tmp.setVisibility(View.VISIBLE);
                 try {
                     _user.setPhoto(response.getString("url"));
+                    Log.d("--URL--", _user.getPhoto());
                     URL url = new URL(_user.getPhoto());
                     Object data = url.getContent();
                     InputStream stream = (InputStream) data;
