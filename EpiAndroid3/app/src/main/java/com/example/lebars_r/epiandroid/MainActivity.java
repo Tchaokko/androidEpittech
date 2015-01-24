@@ -37,6 +37,7 @@ public class MainActivity extends Activity {
     EditText err;
     String userToken;
     AsyncHttpClient client = new AsyncHttpClient();
+    User student = new User();
 
 
     private final List<JSONObject> list = new ArrayList<JSONObject>();
@@ -73,25 +74,10 @@ public class MainActivity extends Activity {
                     testParam.put("token",userToken);
                     Intent profileIntent = new Intent(MainActivity.this, Profile.class);
                     startActivity(profileIntent);
-
-                    client.post("https://epitech-api.herokuapp.com/infos", testParam, new AsyncHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                            String response2 = new String(responseBody);
-                            try {
-                                JSONObject info = new JSONObject(response2);
-                                String check = info.getString("board");
-                                Log.d("--INFOS--", check);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                            Log.d("--FAILURE INFOS--", "Infos failure");
-                        }
-                    });
+                    profileIntent.putExtra("login",log.getText().toString());
+                    profileIntent.putExtra("pwd", log.getText().toString());
+                    profileIntent.putExtra("token",userToken);
+                    MainActivity.this.finish();
                 }
 
                 @Override

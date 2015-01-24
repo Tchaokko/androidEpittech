@@ -1,6 +1,7 @@
 package com.example.lebars_r.epiandroid;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -31,6 +32,9 @@ public class Profile extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
     RequestParams Param = new RequestParams();
     AsyncHttpClient client = new AsyncHttpClient();
+    String login;
+    String pwd;
+    String token;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -55,6 +59,12 @@ public class Profile extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+        Intent intent = getIntent();
+        login = intent.getStringExtra("login");
+        pwd = intent.getStringExtra("pwd");
+        token = intent.getStringExtra("token");
+        Log.d("--TOKEN--", token);
+        Param.put("token", token);
         client.post("https://epitech-api.herokuapp.com/infos", Param, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
