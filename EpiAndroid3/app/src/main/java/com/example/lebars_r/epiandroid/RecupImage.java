@@ -3,6 +3,8 @@ package com.example.lebars_r.epiandroid;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.ImageView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +17,17 @@ import java.net.URL;
  */
 public class RecupImage extends AsyncTask<Void,Void,Void> {
     private Bitmap picture;
+
+    public ImageView getViewer() {
+        return viewer;
+    }
+
+    public void setViewer(ImageView viewer) {
+        this.viewer = viewer;
+    }
+
+    private ImageView viewer;
+
 
     public void setUrl(String url) {
         this.url = url;
@@ -50,6 +63,7 @@ public class RecupImage extends AsyncTask<Void,Void,Void> {
        return this.picture;
    }
     protected void onPostExecute(Void result) {
-        // dismiss progress dialog and update ui
+        Log.d("--SETIMAGE--", "Success");
+        viewer.setImageBitmap(picture);
     }
 }

@@ -60,6 +60,7 @@ public class Profile extends ActionBarActivity
                     Bitmap bitmap;
                     _user.setPhoto(response.getString("url"));
                     _recup.setUrl(_user.getPhoto());
+                    _recup.setViewer(tmp);
                     _recup.execute();
                     //_recup.doInBackground();
                     if ((bitmap = _recup.getPicture()) != null) {
