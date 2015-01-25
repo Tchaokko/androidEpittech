@@ -128,7 +128,49 @@ public class Profile extends ActionBarActivity
         });
     }
 
-    private void handleInfo()
+    private void handle_token_info(JSONObject response) {
+        JSONObject data;
+        try {
+            data = response.getJSONObject("infos");
+            _user.setUid(data.getString("uid"));
+            _user.setGid(data.getString("gid"));
+            _user.setSemester(data.getString("semester"));
+            _user.setIp(response.getString("ip"));
+
+            TextView tmp = (TextView) findViewById(R.id.aff_login);
+            tmp.setText("login : " + _user.getLogin());
+
+            tmp = (TextView)findViewById(R.id.aff_uid);
+            tmp.setText("Uid : " +  _user.getUid());
+
+            tmp = (TextView)findViewById(R.id.aff_gid);
+            tmp.setText("Gid : " + _user.getGid());
+
+            tmp = (TextView) findViewById(R.id.aff_semester);
+            tmp.setText("semester : " + _user.getSemester() );
+
+            tmp = (TextView) findViewById(R.id.aff_ip);
+            tmp.setText("ip : " + _user.getIp());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handle_token_current(JSONObject response) {
+        JSONObject data;
+        try {
+            data = response.getJSONObject("current");
+            _user.setLogtime(data.getString("active_log"));
+            TextView tmp = (TextView) findViewById(R.id.aff_logtime);
+            tmp.setText("log time : " + _user.getLogtime());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleInfos()
     {
         RequestParams Param = new RequestParams();
         Log.d("--TOKEN--", _user.getToken());
@@ -139,24 +181,8 @@ public class Profile extends ActionBarActivity
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 Log.d("--SUCCESS--", "INFO BEGIN");
-                JSONObject data;
-                try {
-                    data = response.getJSONObject("infos");
-                    TextView tmp = (TextView) findViewById(R.id.aff_login);
-                    tmp.setText("login : " + _user.getLogin());
-                    tmp = (TextView)findViewById(R.id.aff_uid);
-                    _user.setUid(data.getString("uid"));
-                    _user.setGid(data.getString("gid"));
-                    tmp.setText("Uid / Gid : " +  _user.getUid() + " / " + _user.getGid());
-                    _user.setSemester(data.getString("semester"));
-                    tmp = (TextView) findViewById(R.id.aff_semester);
-                    tmp.setText("semester : " + _user.getSemester() );
-                    Log.d("--HISTORY--", "0");
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                handle_token_info(response);
+                handle_token_current(response);
             }
 
             @Override
@@ -189,7 +215,7 @@ public class Profile extends ActionBarActivity
         StrictMode.ThreadPolicy pol = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(pol);
         affPicture();
-        handleInfo();
+        handleInfos();
         recupMessage();
     }
 

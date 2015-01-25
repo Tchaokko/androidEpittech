@@ -15,8 +15,11 @@ public class User {
     private String logtime;
     private String gid;
     private String semester;
+    private String ip;
 
-
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
     public void setSemester(String semester) {
         this.semester = semester;
     }
@@ -42,7 +45,9 @@ public class User {
         this.gid = gid;
     }
 
-
+    public String getIp() {
+        return ip;
+    }
     public String getSemester() {
         return semester;
     }
