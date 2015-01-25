@@ -76,7 +76,6 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:id="@+id/aff_logtime" />
-
             </LinearLayout>
 
         </GridLayout>

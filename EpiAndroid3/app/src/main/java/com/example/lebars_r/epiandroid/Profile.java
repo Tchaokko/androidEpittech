@@ -98,7 +98,6 @@ public class Profile extends ActionBarActivity
         RequestParams Param = new RequestParams();
         Param.put("token", _user.getToken());
         client.post("https://epitech-api.herokuapp.com/messages", Param, new JsonHttpResponseHandler() {
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
@@ -161,9 +160,13 @@ public class Profile extends ActionBarActivity
         JSONObject data;
         try {
             data = response.getJSONObject("current");
-            _user.setLogtime(data.getString("active_log"));
+
             TextView tmp = (TextView) findViewById(R.id.aff_logtime);
-            tmp.setText("log time : " + _user.getLogtime());
+            String temp = data.getString("active_log");
+            String regex ="\\" + ".(.*$)";
+            temp = temp.replaceAll(regex, "");
+            _user.setLogtime(temp);
+            tmp.setText("log time : " + _user.getLogtime() + "h");
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -217,6 +220,35 @@ public class Profile extends ActionBarActivity
         affPicture();
         handleInfos();
         recupMessage();
+        RequestParams Param = new RequestParams();
+        Log.d("--TOKEN--", _user.getToken());
+        Param.put("token", _user.getToken());
+        client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.d("--SUCCESS--", "INFO BEGIN");
+                JSONObject data;
+                try {
+                    data = response.getJSONObject("infos");
+                    TextView tmp = (TextView) findViewById(R.id.aff_login);
+                    tmp.setText("login : " + _user.getLogin());
+
+                    tmp = (TextView)findViewById(R.id.aff_uid);
+                    tmp.setText("uid :" + data.getString("uid"));
+                    Log.d("--HISTORY--", "0");
+                    data = response.getJSONObject("current");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("--FAILURE INFOS--", "Infos failure");
+            }
+        });
     }
 
     @Override
