@@ -220,6 +220,7 @@ public class Profile extends ActionBarActivity
         affPicture();
         handleInfos();
         recupMessage();
+        Planning planning = new Planning();
         RequestParams Param = new RequestParams();
         Log.d("--TOKEN--", _user.getToken());
         Param.put("token", _user.getToken());
