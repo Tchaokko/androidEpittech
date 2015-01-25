@@ -223,6 +223,7 @@ public class Profile extends ActionBarActivity
         RequestParams Param = new RequestParams();
         Log.d("--TOKEN--", _user.getToken());
         Param.put("token", _user.getToken());
+
         client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
