@@ -13,23 +13,22 @@ public class User {
     private String Photo;
     private String uid;
     private String logtime;
+    private String gid;
+    private String semester;
+    private String ip;
 
-    public String getLogtime() {
-        return logtime;
+    public void setIp(String ip) {
+        this.ip = ip;
     }
-
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
     public void setLogtime(String logtime) {
         this.logtime = logtime;
     }
-
-    public String getUid() {
-        return uid;
-    }
-
     public void setUid(String uid) {
         this.uid = uid;
     }
-
     public void setLogin(String _log){
         Login = _log;
     }
@@ -42,8 +41,16 @@ public class User {
     public void setPhoto(String _photo){
         Photo = _photo;
     }
+    public void setGid(String gid) {
+        this.gid = gid;
+    }
 
-
+    public String getIp() {
+        return ip;
+    }
+    public String getSemester() {
+        return semester;
+    }
     public String getToken(){
         return (Token);
     }
@@ -56,4 +63,14 @@ public class User {
     public String getPhoto() {
         return Photo;
     }
+    public String getUid() {
+        return uid;
+    }
+    public String getLogtime() {
+        return logtime;
+    }
+    public String getGid() {
+        return gid;
+    }
+
 }

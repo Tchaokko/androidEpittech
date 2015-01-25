@@ -112,11 +112,80 @@ public class Profile extends ActionBarActivity
                         Log.d("--JSON--", "JSON 2");
                         String temp = data.getString("title");
                         temp = temp.replaceAll("<([^<]*)>", "");
-                        tmp.setText(tmp.getText()+ "\n" + temp);
+                        tmp.setText(tmp.getText()+ "\n----------------\n" + temp);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("--FAILURE INFOS--", "Infos failure");
+            }
+        });
+    }
+
+    private void handle_token_info(JSONObject response) {
+        JSONObject data;
+        try {
+            data = response.getJSONObject("infos");
+            _user.setUid(data.getString("uid"));
+            _user.setGid(data.getString("gid"));
+            _user.setSemester(data.getString("semester"));
+            _user.setIp(response.getString("ip"));
+
+            TextView tmp = (TextView) findViewById(R.id.aff_login);
+            tmp.setText("login : " + _user.getLogin());
+
+            tmp = (TextView)findViewById(R.id.aff_uid);
+            tmp.setText("Uid : " +  _user.getUid());
+
+            tmp = (TextView)findViewById(R.id.aff_gid);
+            tmp.setText("Gid : " + _user.getGid());
+
+            tmp = (TextView) findViewById(R.id.aff_semester);
+            tmp.setText("semester : " + _user.getSemester() );
+
+            tmp = (TextView) findViewById(R.id.aff_ip);
+            tmp.setText("ip : " + _user.getIp());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handle_token_current(JSONObject response) {
+        JSONObject data;
+        try {
+            data = response.getJSONObject("current");
+
+            TextView tmp = (TextView) findViewById(R.id.aff_logtime);
+            String temp = data.getString("active_log");
+            String regex ="\\" + ".(.*$)";
+            temp = temp.replaceAll(regex, "");
+            _user.setLogtime(temp);
+            tmp.setText("log time : " + _user.getLogtime() + "h");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleInfos()
+    {
+        RequestParams Param = new RequestParams();
+        Log.d("--TOKEN--", _user.getToken());
+        Param.put("token", _user.getToken());
+        client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.d("--SUCCESS--", "INFO BEGIN");
+                handle_token_info(response);
+                handle_token_current(response);
             }
 
             @Override
@@ -149,6 +218,7 @@ public class Profile extends ActionBarActivity
         StrictMode.ThreadPolicy pol = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(pol);
         affPicture();
+        handleInfos();
         recupMessage();
         RequestParams Param = new RequestParams();
         Log.d("--TOKEN--", _user.getToken());
@@ -168,13 +238,6 @@ public class Profile extends ActionBarActivity
                     tmp.setText("uid :" + data.getString("uid"));
                     Log.d("--HISTORY--", "0");
                     data = response.getJSONObject("current");
-                    tmp = (TextView) findViewById(R.id.aff_log);
-                    String temp = data.getString("active_log");
-                    String regex ="\\" + ".(.*$)";
-                    temp = temp.replaceAll(regex, "");
-                    tmp.setText("Log : " + temp + " h");
-
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
