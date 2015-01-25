@@ -53,6 +53,21 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/aff_uid"
                     android:background="#ffff3200" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:id="@+id/aff_log"
+                    android:background="#ffff3200" />
+
+                <TextView
+                    android:layout_width="202dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/aff_credits"
+                    android:background="#ffff3200" />
             </LinearLayout>
 
         </GridLayout>

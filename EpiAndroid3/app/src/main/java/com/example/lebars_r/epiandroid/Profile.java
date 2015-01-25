@@ -98,7 +98,6 @@ public class Profile extends ActionBarActivity
         RequestParams Param = new RequestParams();
         Param.put("token", _user.getToken());
         client.post("https://epitech-api.herokuapp.com/messages", Param, new JsonHttpResponseHandler() {
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
@@ -155,7 +154,6 @@ public class Profile extends ActionBarActivity
         Log.d("--TOKEN--", _user.getToken());
         Param.put("token", _user.getToken());
         client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
@@ -169,6 +167,12 @@ public class Profile extends ActionBarActivity
                     tmp = (TextView)findViewById(R.id.aff_uid);
                     tmp.setText("uid :" + data.getString("uid"));
                     Log.d("--HISTORY--", "0");
+                    data = response.getJSONObject("current");
+                    tmp = (TextView) findViewById(R.id.aff_log);
+                    String temp = data.getString("active_log");
+                    String regex ="\\" + ".(.*$)";
+                    temp = temp.replaceAll(regex, "");
+                    tmp.setText("Log : " + temp + " h");
 
 
                 } catch (JSONException e) {
