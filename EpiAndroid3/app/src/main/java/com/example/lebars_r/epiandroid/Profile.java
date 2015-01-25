@@ -113,8 +113,47 @@ public class Profile extends ActionBarActivity
                         Log.d("--JSON--", "JSON 2");
                         String temp = data.getString("title");
                         temp = temp.replaceAll("<([^<]*)>", "");
-                        tmp.setText(tmp.getText()+ "\n" + temp);
+                        tmp.setText(tmp.getText()+ "\n----------------\n" + temp);
                     }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("--FAILURE INFOS--", "Infos failure");
+            }
+        });
+    }
+
+    private void handleInfo()
+    {
+        RequestParams Param = new RequestParams();
+        Log.d("--TOKEN--", _user.getToken());
+        Param.put("token", _user.getToken());
+        client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.d("--SUCCESS--", "INFO BEGIN");
+                JSONObject data;
+                try {
+                    data = response.getJSONObject("infos");
+                    TextView tmp = (TextView) findViewById(R.id.aff_login);
+                    tmp.setText("login : " + _user.getLogin());
+                    tmp = (TextView)findViewById(R.id.aff_uid);
+                    _user.setUid(data.getString("uid"));
+                    _user.setGid(data.getString("gid"));
+                    tmp.setText("Uid / Gid : " +  _user.getUid() + " / " + _user.getGid());
+                    _user.setSemester(data.getString("semester"));
+                    tmp = (TextView) findViewById(R.id.aff_semester);
+                    tmp.setText("semester : " + _user.getSemester() );
+                    Log.d("--HISTORY--", "0");
+
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -150,38 +189,8 @@ public class Profile extends ActionBarActivity
         StrictMode.ThreadPolicy pol = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(pol);
         affPicture();
+        handleInfo();
         recupMessage();
-        RequestParams Param = new RequestParams();
-        Log.d("--TOKEN--", _user.getToken());
-        Param.put("token", _user.getToken());
-        client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                Log.d("--SUCCESS--", "INFO BEGIN");
-                JSONObject data;
-                try {
-                    data = response.getJSONObject("infos");
-                    TextView tmp = (TextView) findViewById(R.id.aff_login);
-                    tmp.setText("login : " + _user.getLogin());
-
-                    tmp = (TextView)findViewById(R.id.aff_uid);
-                    tmp.setText("uid :" + data.getString("uid"));
-                    Log.d("--HISTORY--", "0");
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                Log.d("--FAILURE INFOS--", "Infos failure");
-            }
-        });
     }
 
     @Override

@@ -35,7 +35,7 @@
 
             <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="176dp"
+                android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:layout_row="0"
                 android:layout_column="1">
@@ -53,6 +53,13 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/aff_uid"
                     android:background="#ffff3200" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/aff_semester"
+                    android:background="#ff17e4ff" />
             </LinearLayout>
 
         </GridLayout>
