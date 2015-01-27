@@ -25,7 +25,7 @@ import org.json.JSONObject;
 /**
  * Created by the cambio on 25/01/2015.
  */
-public class Planning extends Fragment {
+public class Planning extends ActionBarActivity {
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence mTitle;
