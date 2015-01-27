@@ -3,6 +3,8 @@ package com.example.lebars_r.epiandroid;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -23,7 +25,7 @@ import org.json.JSONObject;
 /**
  * Created by the cambio on 25/01/2015.
  */
-public class Planning extends ActionBarActivity {
+public class Planning extends Fragment {
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence mTitle;
