@@ -256,10 +256,26 @@ public class Profile extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
+        Fragment fragment = null;
+        switch(position) {
+            case 0:
+                fragment = new Fragment();
+                //setContentView(R.layout.fragment_planning);
+                Log.d("'--DRAWER--", "CASE 1");
+                break;
+            case 1:
+                Log.d("'--DRAWER--", "CASE 2");
+                break;
+            case 2:
+                Log.d("'--DRAWER--", "CASE 3");
+                break;
+        }
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                 .commit();
+        Log.d("'--DRAWER--", "SELECTED");
+
     }
 
     public void onSectionAttached(int number) {
