@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/EpiAndroid.iml" filepath="$PROJECT_DIR$/EpiAndroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/androidEpittech.iml" filepath="$PROJECT_DIR$/androidEpittech.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

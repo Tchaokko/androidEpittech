@@ -43,7 +43,6 @@ public class Profile extends ActionBarActivity
     private RequestParams Param = new RequestParams();
     private AsyncHttpClient client = new AsyncHttpClient();
     private User _user = new User();
-    private RecupImage _recup = new RecupImage();
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
