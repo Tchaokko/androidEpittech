@@ -102,16 +102,17 @@ public class Profile extends ActionBarActivity
                 super.onSuccess(statusCode, headers, response);
                 Log.d("--SUCCESS--", "INFO BEGIN");
                 JSONObject data;
-                try {
-                    TextView tmp = (TextView) findViewById(R.id.aff_message);
+
+              try {
+
+                  TextView tmp = (TextView) findViewById(R.id.aff_message);
                     tmp.setText("Notification : ");
                     for (int i = 0; i < response.length(); ++i){
-                        Log.d("--JSON--", "JSON 1");
                         data = response.getJSONObject(i);
-                        Log.d("--JSON--", "JSON 2");
                         String temp = data.getString("title");
                         temp = temp.replaceAll("<([^<]*)>", "");
                         tmp.setText(tmp.getText()+ "\n----------------\n" + temp);
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
