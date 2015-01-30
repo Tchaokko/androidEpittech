@@ -40,9 +40,13 @@ import java.net.URL;
 
 public class Controleur extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
-    private RequestParams Param = new RequestParams();
+    private RequestParams Param;;
     private AsyncHttpClient client = new AsyncHttpClient();
-    private User _user = new User();
+    private Model _model = new Model();
+    EditText err;
+    EditText pwd;
+    EditText log;
+    boolean logged = false;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -57,10 +61,10 @@ public class Controleur extends ActionBarActivity
 
     private void affPicture()
     {
-/*        RequestParams Param = new RequestParams();
-        Param.put("token", _user.getToken());
-        Param.put("login", _user.getLogin());
-       client.get("https://epitech-api.herokuapp.com/photo", Param, new JsonHttpResponseHandler() {
+        Param = new RequestParams();
+        Param.put("token", _model.getToken());
+        Param.put("login", _model.getLogin());
+        client.get("https://epitech-api.herokuapp.com/photo", Param, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
@@ -68,9 +72,9 @@ public class Controleur extends ActionBarActivity
                 ImageView tmp = (ImageView) findViewById(R.id.profile_picture);
                 tmp.setVisibility(View.VISIBLE);
                 try {
-                    _user.setPhoto(response.getString("url").replaceAll(" ", ""));
-                    Log.d("--URL--", _user.getPhoto());
-                    URL url = new URL(_user.getPhoto());
+                    _model.setPhoto(response.getString("url").replaceAll(" ", ""));
+                    Log.d("--URL--", _model.getPhoto());
+                    URL url = new URL(_model.getPhoto());
                     Object data = url.getContent();
                     InputStream stream = (InputStream) data;
                     Drawable img = Drawable.createFromStream(stream, "src");
@@ -83,19 +87,19 @@ public class Controleur extends ActionBarActivity
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }*/
+            }
 
-/*            @Override
+            @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
                 Log.d("--ERROR--", "picture");
             }
-        });*/
+        });
     }
 
     protected void recupMessage(){
-/*        RequestParams Param = new RequestParams();
-        Param.put("token", _user.getToken());
+        RequestParams Param = new RequestParams();
+        Param.put("token", _model.getToken());
         client.post("https://epitech-api.herokuapp.com/messages", Param, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
@@ -116,70 +120,69 @@ public class Controleur extends ActionBarActivity
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                }*/
-/*            }
+                }
+            }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
                 Log.d("--FAILURE INFOS--", "Infos failure");
             }
-        });*/
+        });
     }
 
     private void handle_token_info(JSONObject response) {
         JSONObject data;
-/*        try {
+        try {
             data = response.getJSONObject("infos");
-            _user.setUid(data.getString("uid"));
-            _user.setGid(data.getString("gid"));
-            _user.setSemester(data.getString("semester"));
-            _user.setIp(response.getString("ip"));
+            _model.setUid(data.getString("uid"));
+            _model.setGid(data.getString("gid"));
+            _model.setSemester(data.getString("semester"));
+            _model.setIp(response.getString("ip"));
 
             TextView tmp = (TextView) findViewById(R.id.aff_login);
-            tmp.setText("login : " + _user.getLogin());
+            tmp.setText("login : " + _model.getLogin());
 
             tmp = (TextView)findViewById(R.id.aff_uid);
-            tmp.setText("Uid : " +  _user.getUid());
+            tmp.setText("Uid : " +  _model.getUid());
 
             tmp = (TextView)findViewById(R.id.aff_gid);
-            tmp.setText("Gid : " + _user.getGid());
+            tmp.setText("Gid : " + _model.getGid());
 
             tmp = (TextView) findViewById(R.id.aff_semester);
-            tmp.setText("semester : " + _user.getSemester() );
+            tmp.setText("semester : " + _model.getSemester() );
 
             tmp = (TextView) findViewById(R.id.aff_ip);
-            tmp.setText("ip : " + _user.getIp());
+            tmp.setText("ip : " + _model.getIp());
 
         } catch (JSONException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     private void handle_token_current(JSONObject response) {
         JSONObject data;
-/*        try {
+        try {
             data = response.getJSONObject("current");
 
             TextView tmp = (TextView) findViewById(R.id.aff_logtime);
             String temp = data.getString("active_log");
             String regex ="\\" + ".(.*$)";
             temp = temp.replaceAll(regex, "");
-            _user.setLogtime(temp);
-            tmp.setText("log time : " + _user.getLogtime() + "h");
+            _model.setLogtime(temp);
+            tmp.setText("log time : " + _model.getLogtime() + "h");
 
         } catch (JSONException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     private void handleInfos()
     {
-/*        RequestParams Param = new RequestParams();
-        Log.d("--TOKEN--", _user.getToken());
-        Param.put("token", _user.getToken());
+        RequestParams Param = new RequestParams();
+        Log.d("--TOKEN--", _model.getToken());
+        Param.put("token", _model.getToken());
         client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
@@ -193,14 +196,56 @@ public class Controleur extends ActionBarActivity
                 super.onFailure(statusCode, headers, responseString, throwable);
                 Log.d("--FAILURE INFOS--", "Infos failure");
             }
-        });*/
+        });
+    }
+
+    public void LogMe(View view) {
+        logged = false;
+        pwd = (EditText) findViewById(R.id.password_field);
+        log = (EditText) findViewById(R.id.login_field);
+        err = (EditText) findViewById(R.id.error_label);
+        _model.setLogin(log.getText().toString());
+        _model.setPassword(pwd.getText().toString());
+        Param = new RequestParams();
+        Param.put("login", _model.getLogin().toString());
+        Param.put("password", _model.getPassword().toString());
+        client.post("https://epitech-api.herokuapp.com/login", Param, new JsonHttpResponseHandler() {
+              @Override
+              public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                err.setVisibility(View.INVISIBLE);
+                logged = true;
+                Log.d("--SUCCESS--", "SUCCESS");
+                try {
+                    _model.setToken(response.getString("token"));
+                     Log.d("--TOKEN--", _model.getToken());
+                } catch (JSONException e) {
+                     e.printStackTrace();
+                }
+                  onNavigationDrawerItemSelected(1);
+                }
+
+              @Override
+              public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                err.setVisibility(View.VISIBLE);
+                pwd.setText("");
+                Log.d("--FAILURE--", "ERROR");
+                }
+              });
+
+    }
+
+    private void aff_profile(){
+        affPicture();
+        handleInfos();
+        recupMessage();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_controleur);
-
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -211,51 +256,18 @@ public class Controleur extends ActionBarActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
 
-        Intent intent = getIntent();
-        _user.setLogin("lebars_r"/*intent.getStringExtra("login")*/);
-        _user.setPassword("toto"/*intent.getStringExtra("pwd")*/);
-        _user.setToken("3evsebjkecjr7l3jcm71f4pmc7"/*intent.getStringExtra("token")*/);
+        //Intent intent = getIntent();
         StrictMode.ThreadPolicy pol = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(pol);
-        affPicture();
-        handleInfos();
-        recupMessage();
-     //   Planning planning = new Planning();
-        RequestParams Param = new RequestParams();
-        Log.d("--TOKEN--", _user.getToken());
-        Param.put("token", _user.getToken());
 
-/*        client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                Log.d("--SUCCESS--", "INFO BEGIN");
-                JSONObject data;
-                try {
-                    data = response.getJSONObject("infos");
-                    TextView tmp = (TextView) findViewById(R.id.aff_login);
-                    tmp.setText("login : " + _user.getLogin());
-
-                    tmp = (TextView)findViewById(R.id.aff_uid);
-                    tmp.setText("uid :" + data.getString("uid"));
-                    Log.d("--HISTORY--", "0");
-                    data = response.getJSONObject("current");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                Log.d("--FAILURE INFOS--", "Infos failure");
-            }
-        });*/
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
+        if (position > 0 && logged == false) {
+            return ;
+        }
         Fragment fragment = null;
         switch(position) {
             case 0:
@@ -264,6 +276,7 @@ public class Controleur extends ActionBarActivity
                 break;
             case 1:
                 fragment = Profile.newInstance();
+                aff_profile();
                 Log.d("'--DRAWER--", "CASE 2");
                 break;
             case 2:
