@@ -70,8 +70,6 @@ public class Controleur extends ActionBarActivity
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 Log.d("--SUCCESS--", "picture");
-                ImageView tmp = (ImageView) findViewById(R.id.profile_picture);
-                tmp.setVisibility(View.VISIBLE);
                 try {
                     _model.setPhoto(response.getString("url").replaceAll(" ", ""));
                     Log.d("--URL--", _model.getPhoto());
@@ -79,8 +77,7 @@ public class Controleur extends ActionBarActivity
                     Object data = url.getContent();
                     InputStream stream = (InputStream) data;
                     Drawable img = Drawable.createFromStream(stream, "src");
-                    tmp.setImageDrawable(img);
-
+                    _view.put_picture_in_view((ImageView) findViewById(R.id.profile_picture), img);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -109,16 +106,15 @@ public class Controleur extends ActionBarActivity
                 JSONObject data;
 
               try {
-
-                  TextView tmp = (TextView) findViewById(R.id.aff_message);
-                    tmp.setText("Notification : ");
+                    String str;
+                    str = "Notification : ";
                     for (int i = 0; i < response.length(); ++i){
                         data = response.getJSONObject(i);
-                        String temp = data.getString("title");
-                        temp = temp.replaceAll("<([^<]*)>", "");
-                        tmp.setText(tmp.getText()+ "\n----------------\n" + temp);
-
+                        String tmp = data.getString("title");
+                        tmp = tmp.replaceAll("<([^<]*)>", "");
+                        str  = str + "\n----------------\n" + tmp;
                     }
+                  _view.put_data_in_view((TextView)findViewById(R.id.aff_message), str);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -156,13 +152,11 @@ public class Controleur extends ActionBarActivity
         JSONObject data;
         try {
             data = response.getJSONObject("current");
-
-            TextView tmp = (TextView) findViewById(R.id.aff_logtime);
-            String temp = data.getString("active_log");
+            String tmp = data.getString("active_log");
             String regex ="\\" + ".(.*$)";
-            temp = temp.replaceAll(regex, "");
-            _model.setLogtime(temp);
-            tmp.setText("log time : " + _model.getLogtime() + "h");
+            tmp = tmp.replaceAll(regex, "");
+            _model.setLogtime(tmp);
+            _view.put_data_in_view((TextView)findViewById(R.id.aff_logtime), "Log time : " +  _model.getLogtime() + "h");
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -221,7 +215,7 @@ public class Controleur extends ActionBarActivity
               public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 err.setVisibility(View.VISIBLE);
-                pwd.setText("");
+                _view.put_data_in_view(pwd, "");
                 Log.d("--FAILURE--", "ERROR");
                 }
               });
