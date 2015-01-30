@@ -54,7 +54,7 @@
                     android:id="@+id/aff_gid" />
 
                 <TextView
-                    android:layout_width="236dp"
+                    android:layout_width="237dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:id="@+id/aff_semester" />
