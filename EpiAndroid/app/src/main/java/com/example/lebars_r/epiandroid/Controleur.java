@@ -43,6 +43,7 @@ public class Controleur extends ActionBarActivity
     private RequestParams Param;;
     private AsyncHttpClient client = new AsyncHttpClient();
     private Model _model = new Model();
+    private My_view _view = new My_view();
     EditText err;
     EditText pwd;
     EditText log;
@@ -140,20 +141,11 @@ public class Controleur extends ActionBarActivity
             _model.setSemester(data.getString("semester"));
             _model.setIp(response.getString("ip"));
 
-            TextView tmp = (TextView) findViewById(R.id.aff_login);
-            tmp.setText("login : " + _model.getLogin());
-
-            tmp = (TextView)findViewById(R.id.aff_uid);
-            tmp.setText("Uid : " +  _model.getUid());
-
-            tmp = (TextView)findViewById(R.id.aff_gid);
-            tmp.setText("Gid : " + _model.getGid());
-
-            tmp = (TextView) findViewById(R.id.aff_semester);
-            tmp.setText("semester : " + _model.getSemester() );
-
-            tmp = (TextView) findViewById(R.id.aff_ip);
-            tmp.setText("ip : " + _model.getIp());
+            _view.put_data_in_view((TextView) findViewById(R.id.aff_login), "Login : " + _model.getLogin());
+            _view.put_data_in_view((TextView)findViewById(R.id.aff_uid), "Uid : " +  _model.getUid());
+            _view.put_data_in_view((TextView)findViewById(R.id.aff_gid), "Gid : " +  _model.getGid());
+            _view.put_data_in_view((TextView)findViewById(R.id.aff_semester), "Semester : " +  _model.getSemester());
+            _view.put_data_in_view((TextView)findViewById(R.id.aff_ip), "Ip : " +  _model.getIp());
 
         } catch (JSONException e) {
             e.printStackTrace();
