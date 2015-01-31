@@ -18,8 +18,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -62,70 +66,86 @@ public class Controleur extends ActionBarActivity
 
     private void affPicture()
     {
-        Param = new RequestParams();
-        Param.put("token", _model.getToken());
-        Param.put("login", _model.getLogin());
-        client.get("https://epitech-api.herokuapp.com/photo", Param, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                Log.d("--SUCCESS--", "picture");
-                try {
-                    _model.setPhoto(response.getString("url").replaceAll(" ", ""));
-                    Log.d("--URL--", _model.getPhoto());
-                    URL url = new URL(_model.getPhoto());
-                    Object data = url.getContent();
-                    InputStream stream = (InputStream) data;
-                    Drawable img = Drawable.createFromStream(stream, "src");
-                    _view.put_picture_in_view((ImageView) findViewById(R.id.profile_picture), img);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+/*        if (!_model.isUserSetup()) {*/
+            Param = new RequestParams();
+            Param.put("token", _model.getToken());
+            Param.put("login", _model.getLogin());
+            client.get("https://epitech-api.herokuapp.com/photo", Param, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+                    Log.d("--SUCCESS--", "picture");
+                    try {
+                        _model.setPhoto(response.getString("url").replaceAll(" ", ""));
+                        Log.d("--URL--", _model.getPhoto());
+                        URL url = new URL(_model.getPhoto());
+                        Object data = url.getContent();
+                        InputStream stream = (InputStream) data;
+                        Drawable img = Drawable.createFromStream(stream, "src");
+                        _model.setUserPicture(img);
+                        _view.put_picture_in_view((ImageView) findViewById(R.id.profile_picture), _model.getUserPicture());
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                Log.d("--ERROR--", "picture");
-            }
-        });
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    Log.d("--ERROR--", "picture");
+                    _model.setFailSetup(true);
+                }
+            });
+/*        }
+        else{
+            Log.d("--DEBUG--", _model.getLogin());
+            //_view.put_picture_in_view((ImageView) findViewById(R.id.profile_picture), _model.getUserPicture());
+        }*/
     }
 
     protected void recupMessage(){
-        RequestParams Param = new RequestParams();
-        Param.put("token", _model.getToken());
-        client.post("https://epitech-api.herokuapp.com/messages", Param, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                super.onSuccess(statusCode, headers, response);
-                Log.d("--SUCCESS--", "INFO BEGIN");
-                JSONObject data;
+ /*       if (!_model.isUserSetup()) {*/
+            RequestParams Param = new RequestParams();
+            Param.put("token", _model.getToken());
+            client.post("https://epitech-api.herokuapp.com/messages", Param, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    super.onSuccess(statusCode, headers, response);
+                    Log.d("--SUCCESS--", "INFO BEGIN");
+                    JSONObject data;
 
-              try {
-                    String str;
-                    str = "Notification : ";
-                    for (int i = 0; i < response.length(); ++i){
-                        data = response.getJSONObject(i);
-                        String tmp = data.getString("title");
-                        tmp = tmp.replaceAll("<([^<]*)>", "");
-                        str  = str + "\n----------------\n" + tmp;
+                    try {
+                        String str;
+                        str = "Notification : ";
+                        for (int i = 0; i < response.length(); ++i) {
+                            data = response.getJSONObject(i);
+                            String tmp = data.getString("title");
+                            tmp = tmp.replaceAll("<([^<]*)>", "");
+                            str = str + "\n----------------\n" + tmp;
+                        }
+                        _model.setNotification(str);
+                        _view.put_data_in_view((TextView) findViewById(R.id.aff_message), _model.getNotification());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                  _view.put_data_in_view((TextView)findViewById(R.id.aff_message), str);
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                Log.d("--FAILURE INFOS--", "Infos failure");
-            }
-        });
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    Log.d("--FAILURE INFOS--", "Infos failure");
+                    _model.setFailSetup(true);
+                }
+            });
+/*        }
+        else{
+            _view.put_data_in_view((TextView) findViewById(R.id.aff_message), _model.getNotification());
+        }*/
+
     }
 
     private void handle_token_info(JSONObject response) {
@@ -140,7 +160,7 @@ public class Controleur extends ActionBarActivity
             _view.put_data_in_view((TextView) findViewById(R.id.aff_login), "Login : " + _model.getLogin());
             _view.put_data_in_view((TextView)findViewById(R.id.aff_uid), "Uid : " +  _model.getUid());
             _view.put_data_in_view((TextView)findViewById(R.id.aff_gid), "Gid : " +  _model.getGid());
-            _view.put_data_in_view((TextView)findViewById(R.id.aff_semester), "Semester : " +  _model.getSemester());
+            _view.put_data_in_view((TextView) findViewById(R.id.aff_semester), "Semester : " + _model.getSemester());
             _view.put_data_in_view((TextView)findViewById(R.id.aff_ip), "Ip : " +  _model.getIp());
 
         } catch (JSONException e) {
@@ -165,24 +185,37 @@ public class Controleur extends ActionBarActivity
 
     private void handleInfos()
     {
-        RequestParams Param = new RequestParams();
-        Log.d("--TOKEN--", _model.getToken());
-        Param.put("token", _model.getToken());
-        client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                Log.d("--SUCCESS--", "INFO BEGIN");
-                handle_token_info(response);
-                handle_token_current(response);
-            }
+ /*       if (!_model.isUserSetup()) {*/
+            RequestParams Param = new RequestParams();
+            Log.d("--TOKEN--", _model.getToken());
+            Param.put("token", _model.getToken());
+            client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+                    Log.d("--SUCCESS--", "INFO BEGIN");
+                    handle_token_info(response);
+                    handle_token_current(response);
+                }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                Log.d("--FAILURE INFOS--", "Infos failure");
-            }
-        });
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    Log.d("--FAILURE INFOS--", "Infos failure");
+                    _model.setFailSetup(true);
+                }
+            });
+/*        }
+        else {
+            Log.d("--DEBUG--", _model.getLogin());
+            TextView toto = (TextView) findViewById(R.id.aff_login);
+//            _view.put_data_in_view(toto, "Login : " + _model.getLogin());
+*//*            _view.put_data_in_view((TextView)findViewById(R.id.aff_uid), "Uid : " +  _model.getUid());
+            _view.put_data_in_view((TextView)findViewById(R.id.aff_gid), "Gid : " +  _model.getGid());
+            _view.put_data_in_view((TextView) findViewById(R.id.aff_semester), "Semester : " + _model.getSemester());
+            _view.put_data_in_view((TextView)findViewById(R.id.aff_ip), "Ip : " +  _model.getIp());
+            _view.put_data_in_view((TextView)findViewById(R.id.aff_logtime), "Log time : " +  _model.getLogtime() + "h");*//*
+        }*/
     }
 
     public void LogMe(View view) {
@@ -193,14 +226,15 @@ public class Controleur extends ActionBarActivity
         _model.setLogin(log.getText().toString());
         _model.setPassword(pwd.getText().toString());
         Param = new RequestParams();
-        Param.put("login", _model.getLogin().toString());
-        Param.put("password", _model.getPassword().toString());
+        Param.put("login", _model.getLogin());
+        Param.put("password", _model.getPassword());
         client.post("https://epitech-api.herokuapp.com/login", Param, new JsonHttpResponseHandler() {
               @Override
               public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 err.setVisibility(View.INVISIBLE);
                 logged = true;
+                _model.setIsSetupUser(false);
                 Log.d("--SUCCESS--", "SUCCESS");
                 try {
                     _model.setToken(response.getString("token"));
@@ -223,9 +257,13 @@ public class Controleur extends ActionBarActivity
     }
 
     private void aff_profile(){
-        affPicture();
-        handleInfos();
-        recupMessage();
+       affPicture();
+       handleInfos();
+       recupMessage();
+        if (!_model.isFailSetup()) {
+            _model.setIsSetupUser(true);
+            _model.setFailSetup(false);
+        }
     }
 
     @Override
@@ -241,8 +279,6 @@ public class Controleur extends ActionBarActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-
-        //Intent intent = getIntent();
         StrictMode.ThreadPolicy pol = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(pol);
 
@@ -251,22 +287,28 @@ public class Controleur extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        if (position > 0 && logged == false) {
+        if (position > 0 && !logged) {
             return ;
         }
         Fragment fragment = null;
         switch(position) {
             case 0:
                 fragment = Login.newInstance();
-                Log.d("'--DRAWER--", "CASE 1");
+                logged = false;
+                Log.d("'--DRAWER--", "CASE 0");
                 break;
             case 1:
                 fragment = Profile.newInstance();
                 aff_profile();
-                Log.d("'--DRAWER--", "CASE 2");
+                Log.d("'--DRAWER--", "CASE 1");
                 break;
             case 2:
                 fragment = Planning.newInstance();
+                Log.d("'--DRAWER--", "CASE 2");
+                break;
+            case 3:
+                fragment = Grades.newInstance();
+                aff_grade();
                 Log.d("'--DRAWER--", "CASE 3");
                 break;
         }
@@ -276,6 +318,50 @@ public class Controleur extends ActionBarActivity
                 .commit();
         Log.d("'--DRAWER--", "SELECTED");
 
+    }
+
+    private void aff_grade() {
+        Log.d("--TEST--", "BEGIN");
+        RequestParams Param = new RequestParams();
+        Param.put("token", _model.getToken());
+        client.get("https://epitech-api.herokuapp.com/marks", Param, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                JSONObject data;
+                try {
+                    String str = "";
+                    JSONArray tmp = response.getJSONArray("notes");
+                    for (int i = 0; i < tmp.length(); ++i) {
+                        data = tmp.getJSONObject(i);
+                        str = data.getString("titlemodule") + "\n";
+                        str += data.getString("title") + "\n";
+                        str += data.getString("final_note") + "\n";
+                        str += data.getString("correcteur") + "\n";
+                        str += data.getString("date") + "\n";
+                        str += "\n----------\n";
+                        _model.putItemInList(str);
+                        }
+                    Integer taat = _model.getLengthFromMarks();
+                    Log.d("TEST-LENGTH", taat.toString());
+                    str = "";
+                   for (int i = _model.getLengthFromMarks() - 1; i >= 0; i--){
+                    str  +=  _model.getItemInList(i);
+                   }
+                    _view.put_data_in_view((TextView) findViewById(R.id.aff_grade), str);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("--TEST--", "1");
+            }
+        });
     }
 
     public void onSectionAttached(int number) {
@@ -289,6 +375,8 @@ public class Controleur extends ActionBarActivity
             case 3:
                 mTitle = getString(R.string.title_section3);
                 break;
+            case 4:
+                mTitle = getString(R.string.title_section4);
         }
     }
 

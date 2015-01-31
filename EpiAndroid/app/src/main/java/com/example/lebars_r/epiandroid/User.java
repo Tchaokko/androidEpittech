@@ -1,5 +1,6 @@
 package com.example.lebars_r.epiandroid;
 
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 
 /**
@@ -16,6 +17,10 @@ public class User {
     private String gid;
     private String semester;
     private String ip;
+    private boolean isSetup = false;
+    private  boolean failSetup = false;
+    private Drawable img;
+    private String notification;
 
     public void setIp(String ip) {
         this.ip = ip;
@@ -44,6 +49,18 @@ public class User {
     public void setGid(String gid) {
         this.gid = gid;
     }
+    public void setIsSetup(boolean bool){
+        isSetup = bool;
+    }
+    public void setImg(Drawable _img) {
+        img = _img;
+    }
+    public void setNotification(String str){
+        notification = str;
+    }
+    public void setFailSetup(boolean failSetup) {
+        this.failSetup = failSetup;
+    }
 
     public String getIp() {
         return ip;
@@ -71,6 +88,18 @@ public class User {
     }
     public String getGid() {
         return gid;
+    }
+    public boolean getIsSetup(){
+        return isSetup;
+    }
+    public Drawable getImg(){
+        return img;
+    }
+    public String getNotification(){
+        return notification;
+    }
+    public boolean isFailSetup() {
+        return failSetup;
     }
 
 }

@@ -1,11 +1,19 @@
 package com.example.lebars_r.epiandroid;
 
+import android.graphics.drawable.Drawable;
+
+import java.util.ArrayList;
+
 /**
  * Created by lebars_r on 30/01/2015.
  */
 public class Model {
     User _user = new User();
+    Marks _marks = new Marks();
 
+    /*
+     * Setter getter User
+     */
     public void setIp(String ip) {
         _user.setIp(ip);
     }
@@ -32,6 +40,18 @@ public class Model {
     }
     public void setGid(String gid) {
         _user.setGid(gid);
+    }
+    public void setIsSetupUser(boolean bool){
+        _user.setIsSetup(bool);
+    }
+    public void setUserPicture(Drawable _img){
+        _user.setImg(_img);
+    }
+    public void setNotification(String str){
+        _user.setNotification(str);
+    }
+    public void setFailSetup(boolean failSetup) {
+        _user.setFailSetup(failSetup);
     }
 
     public String getIp() {
@@ -61,4 +81,31 @@ public class Model {
     public String getGid() {
         return _user.getGid();
     }
+    public boolean isUserSetup(){
+        return _user.getIsSetup();
+    }
+    public Drawable getUserPicture(){
+        return _user.getImg();
+    }
+    public String getNotification(){
+        return _user.getNotification();
+    }
+    public boolean isFailSetup() {
+        return _user.isFailSetup();
+    }
+
+/*
+ *  Setter Getter Mark
+ */
+    public void putItemInList(String item){
+        _marks.putItemInList(item);
+    }
+    public String getItemInList(int i){
+        return _marks.getItemInList(i);
+    }
+    public int getLengthFromMarks(){
+        return _marks.getLength();
+    }
+    public ArrayList<String> getListFromMark(){
+        return _marks.getList();}
 }
