@@ -2,12 +2,13 @@ package com.example.lebars_r.epiandroid;
 
 import android.graphics.drawable.Drawable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by lebars_r on 30/01/2015.
  */
-public class Model {
+public class Model implements Serializable{
     User _user = new User();
     Marks _marks = new Marks();
 
