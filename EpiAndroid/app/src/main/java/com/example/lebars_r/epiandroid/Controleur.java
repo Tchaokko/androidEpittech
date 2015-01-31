@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.hardware.camera2.CameraCharacteristics;
+import android.inputmethodservice.Keyboard;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,12 +21,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.Adapter;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -40,6 +41,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.Key;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 
 public class Controleur extends ActionBarActivity
@@ -48,6 +54,8 @@ public class Controleur extends ActionBarActivity
     private AsyncHttpClient client = new AsyncHttpClient();
     private Model _model = new Model();
     private My_view _view = new My_view();
+    private Schedule My_schedule = new Schedule();
+
     EditText err;
     EditText pwd;
     EditText log;
@@ -284,7 +292,119 @@ public class Controleur extends ActionBarActivity
 
     }
 
-    @Override
+    private void subscribeActivities(JSONObject temp){
+
+        try {
+            Log.d("--TEST--", temp.getString("acti_title"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sortPlanning(JSONArray Planning){
+        //String aff_planning;
+        String      start;
+        String      end;
+/*        Calendar cal = Calendar.getInstance();
+        List<List<String>> data = new ArrayList<>();
+        List<List<JSONObject>> myList;*/
+        LinearLayout layout = (LinearLayout) findViewById(R.id.planningLayout);
+        String aff;
+        Integer y = 0;
+        for (Integer i = 1; i < Planning.length(); i++) {
+            try {
+                final JSONObject temp = Planning.getJSONObject(i);
+                if (temp.getString("module_registered") == "true") {
+                    y++;
+                    LinearLayout newLayout = new LinearLayout(getApplicationContext());
+                    newLayout.setOrientation(LinearLayout.HORIZONTAL);
+                    TextView activityName = new TextView(getApplicationContext());
+                    newLayout.addView(activityName);
+                    final Button[] subscribe = new Button[3];
+                    subscribe[0] = new Button(getApplicationContext());
+                    subscribe[0].setText("Subscribe");
+                    //subscribe[0].setBackgroundResource();
+                    subscribe[1] = new Button(getApplicationContext());
+                    subscribe[1].setText("Unsubscribe");
+                    subscribe[2] = new Button(getApplicationContext());
+                    subscribe[2].setText("Token");
+                    for (Integer index = 0; index < subscribe.length; index++){
+                        newLayout.addView(subscribe[index]);
+                        final Integer finalIndex = index;
+                        subscribe[index].setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                subscribePressed(temp, finalIndex);
+                            }
+                        });
+                    }
+                    layout.addView(newLayout);
+                    start = temp.getString("start");
+                    end = temp.getString("end");
+                    aff = start + "\n" + end + "\n" + temp.getString("acti_title") + "\n";
+                    _view.put_data_in_view(activityName, aff);
+                }
+            } catch (JSONException | NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
+        Log.d("--SIZE--",y.toString() );
+    }
+
+    private void subscribePressed(JSONObject temp, Integer finalIndex) {
+        if (finalIndex == 0)
+            subscribeActivities(temp);
+        else if (finalIndex == 1)
+            unsubscribeActivities(temp);
+        else
+            sendToken(temp);
+    }
+
+    private void sendToken(JSONObject temp) {
+        try {
+            Log.d("--TOKEN--", temp.getString("acti_title"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void unsubscribeActivities(JSONObject temp) {
+        try {
+            Log.d("--UNSUB--", temp.getString("acti_title"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void aff_planning(){
+        Param = new RequestParams();
+        Param.put("token", _model.getToken());
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyy-MM-dd");
+        Param.put("start", "2015-02-02");
+        Param.put("end", "2015-02-08");
+        My_schedule.setStart(2);
+        client.get("https://epitech-api.herokuapp.com/planning", Param, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.d("--SUCCESS--", "SUCCESS");
+                sortPlanning(response);
+                Log.d("--TOKEN--", _model.getToken());
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                err.setVisibility(View.VISIBLE);
+                Log.d("--FAILURE--", "ERROR");
+            }
+        });
+
+        }
+
+   @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         if (position > 0 && !logged) {
@@ -304,13 +424,15 @@ public class Controleur extends ActionBarActivity
                 break;
             case 2:
                 fragment = Planning.newInstance();
-                Log.d("'--DRAWER--", "CASE 2");
+                aff_planning();
+                Log.d("'--DRAWER--", "CASE 3");
                 break;
             case 3:
                 fragment = Grades.newInstance();
                 aff_grade();
                 Log.d("'--DRAWER--", "CASE 3");
                 break;
+
         }
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
