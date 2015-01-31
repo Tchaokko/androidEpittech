@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.hardware.camera2.CameraCharacteristics;
 import android.inputmethodservice.Keyboard;
 import android.os.StrictMode;
+import android.support.annotation.DrawableRes;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.app.Fragment;
@@ -29,6 +30,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -222,8 +224,8 @@ public class Controleur extends ActionBarActivity
         Param.put("login", _model.getLogin());
         Param.put("password", _model.getPassword());
         client.post("https://epitech-api.herokuapp.com/login", Param, new JsonHttpResponseHandler() {
-              @Override
-              public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 err.setVisibility(View.INVISIBLE);
                 logged = true;
@@ -231,21 +233,21 @@ public class Controleur extends ActionBarActivity
                 Log.d("--SUCCESS--", "SUCCESS");
                 try {
                     _model.setToken(response.getString("token"));
-                     Log.d("--TOKEN--", _model.getToken());
+                    Log.d("--TOKEN--", _model.getToken());
                 } catch (JSONException e) {
-                     e.printStackTrace();
+                    e.printStackTrace();
                 }
-                  onNavigationDrawerItemSelected(1);
-                }
+                onNavigationDrawerItemSelected(1);
+            }
 
-              @Override
-              public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 err.setVisibility(View.VISIBLE);
                 _view.put_data_in_view(pwd, "");
                 Log.d("--FAILURE--", "ERROR");
-                }
-              });
+            }
+        });
     }
 
     private void aff_profile(){
@@ -297,14 +299,14 @@ public class Controleur extends ActionBarActivity
                     newLayout.setOrientation(LinearLayout.HORIZONTAL);
                     TextView activityName = new TextView(getApplicationContext());
                     newLayout.addView(activityName);
-                    final Button[] subscribe = new Button[3];
-                    subscribe[0] = new Button(getApplicationContext());
-                    subscribe[0].setText("Subscribe");
+                    final ImageButton[] subscribe = new ImageButton[3];
+                    subscribe[0] = new ImageButton(getApplicationContext());
+                    subscribe[0].setImageResource(R.drawable.sub);
                     //subscribe[0].setBackgroundResource();
-                    subscribe[1] = new Button(getApplicationContext());
-                    subscribe[1].setText("Unsubscribe");
-                    subscribe[2] = new Button(getApplicationContext());
-                    subscribe[2].setText("Token");
+                    subscribe[1] = new ImageButton(getApplicationContext());
+                    subscribe[1].setImageResource(R.drawable.unsub);
+                    subscribe[2] = new ImageButton(getApplicationContext());
+                    subscribe[2].setImageResource(R.drawable.token);
                     for (Integer index = 0; index < subscribe.length; index++){
                         newLayout.addView(subscribe[index]);
                         final Integer finalIndex = index;
@@ -343,14 +345,15 @@ public class Controleur extends ActionBarActivity
             param.put("token",_model.getToken());
             param.put("scolaryear",temp.getString("scolaryear"));
             param.put("codemodule",temp.getString("codemodule"));
-            param.put("codeinstance",temp.getString("codeinstance"));
-            param.put("codeevent",temp.getString("codeevent"));
+            param.put("codeinstance", temp.getString("codeinstance"));
+            param.put("codeevent", temp.getString("codeevent"));
             param.put("codeacti",temp.getString("codeacti"));
             client.post("https://epitech-api.herokuapp.com/event", param, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     Log.d("--GREAT SUCCESS--", "NEW SUB");
                 }
+
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                     Log.d("--FAIL--", "CAN'T SUB");
