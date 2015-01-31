@@ -46,6 +46,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Key;
@@ -81,7 +82,6 @@ public class Controleur extends ActionBarActivity
 
     private void affPicture()
     {
-/*        if (!_model.isUserSetup()) {*/
             Param = new RequestParams();
             Param.put("token", _model.getToken());
             Param.put("login", _model.getLogin());
@@ -115,15 +115,10 @@ public class Controleur extends ActionBarActivity
                     _model.setFailSetup(true);
                 }
             });
-/*        }
-        else{
-            Log.d("--DEBUG--", _model.getLogin());
-            //_view.put_picture_in_view((ImageView) findViewById(R.id.profile_picture), _model.getUserPicture());
-        }*/
+
     }
 
     protected void recupMessage(){
- /*       if (!_model.isUserSetup()) {*/
             RequestParams Param = new RequestParams();
             Param.put("token", _model.getToken());
             client.post("https://epitech-api.herokuapp.com/messages", Param, new JsonHttpResponseHandler() {
@@ -156,11 +151,6 @@ public class Controleur extends ActionBarActivity
                     _model.setFailSetup(true);
                 }
             });
-/*        }
-        else{
-            _view.put_data_in_view((TextView) findViewById(R.id.aff_message), _model.getNotification());
-        }*/
-
     }
 
     private void handle_token_info(JSONObject response) {
@@ -198,47 +188,35 @@ public class Controleur extends ActionBarActivity
         }
     }
 
-    private void handleInfos()
-    {
- /*       if (!_model.isUserSetup()) {*/
-            RequestParams Param = new RequestParams();
-            Log.d("--TOKEN--", _model.getToken());
-            Param.put("token", _model.getToken());
-            client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    super.onSuccess(statusCode, headers, response);
-                    Log.d("--SUCCESS--", "INFO BEGIN");
-                    handle_token_info(response);
-                    handle_token_current(response);
-                }
+    private void handleInfos() {
+        RequestParams Param = new RequestParams();
+        Log.d("--TOKEN--", _model.getToken());
+        Param.put("token", _model.getToken());
+        client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.d("--SUCCESS--", "INFO BEGIN");
+                handle_token_info(response);
+                handle_token_current(response);
+            }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    Log.d("--FAILURE INFOS--", "Infos failure");
-                    _model.setFailSetup(true);
-                }
-            });
-/*        }
-        else {
-            Log.d("--DEBUG--", _model.getLogin());
-            TextView toto = (TextView) findViewById(R.id.aff_login);
-//            _view.put_data_in_view(toto, "Login : " + _model.getLogin());
-*//*            _view.put_data_in_view((TextView)findViewById(R.id.aff_uid), "Uid : " +  _model.getUid());
-            _view.put_data_in_view((TextView)findViewById(R.id.aff_gid), "Gid : " +  _model.getGid());
-            _view.put_data_in_view((TextView) findViewById(R.id.aff_semester), "Semester : " + _model.getSemester());
-            _view.put_data_in_view((TextView)findViewById(R.id.aff_ip), "Ip : " +  _model.getIp());
-            _view.put_data_in_view((TextView)findViewById(R.id.aff_logtime), "Log time : " +  _model.getLogtime() + "h");*//*
-        }*/
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("--FAILURE INFOS--", "Infos failure");
+                _model.setFailSetup(true);
+            }
+        });
     }
+
 
     public void LogMe(View view) {
         logged = false;
         pwd = (EditText) findViewById(R.id.password_field);
         log = (EditText) findViewById(R.id.login_field);
         err = (EditText) findViewById(R.id.error_label);
-        _model.setLogin(log.getText().toString());
+/*        _model.setLogin(log.getText().toString());
         _model.setPassword(pwd.getText().toString());
         Param = new RequestParams();
         Param.put("login", _model.getLogin());
@@ -267,7 +245,13 @@ public class Controleur extends ActionBarActivity
                 _view.put_data_in_view(pwd, "");
                 Log.d("--FAILURE--", "ERROR");
                 }
-              });
+              });*/
+        _model.setLogin("lebars_r");
+        _model.setPassword("NonMaisNon");
+        _model.setToken("qtm4re801a77vtqoa64shncke3");
+        logged = true;
+        _model.setIsSetupUser(false);
+        onNavigationDrawerItemSelected(1);
 
     }
 
@@ -500,22 +484,18 @@ public class Controleur extends ActionBarActivity
             case 0:
                 fragment = Login.newInstance();
                 logged = false;
-                Log.d("'--DRAWER--", "CASE 0");
                 break;
             case 1:
                 fragment = Profile.newInstance();
                 aff_profile();
-                Log.d("'--DRAWER--", "CASE 1");
                 break;
             case 2:
                 fragment = Planning.newInstance();
                 aff_planning();
-                Log.d("'--DRAWER--", "CASE 3");
                 break;
             case 3:
                 fragment = Grades.newInstance();
                 aff_grade();
-                Log.d("'--DRAWER--", "CASE 3");
                 break;
 
         }
@@ -523,17 +503,13 @@ public class Controleur extends ActionBarActivity
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
                 .commit();
-        Log.d("'--DRAWER--", "SELECTED");
-
     }
 
     private void aff_grade() {
-        Log.d("--TEST--", "BEGIN");
         RequestParams Param = new RequestParams();
         Param.put("token", _model.getToken());
         client.get("https://epitech-api.herokuapp.com/marks", Param, new JsonHttpResponseHandler() {
-
-            @Override
+           @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 JSONObject data;
