@@ -299,14 +299,7 @@ public class Controleur extends ActionBarActivity
 
     }
 
-    private void subscribeActivities(JSONObject temp){
 
-        try {
-            Log.d("--TEST--", temp.getString("acti_title"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void sortPlanning(JSONArray Planning){
         //String aff_planning;
@@ -366,7 +359,30 @@ public class Controleur extends ActionBarActivity
         else
             sendToken(temp);
     }
+    private void subscribeActivities(JSONObject temp){
 
+        try {
+            RequestParams param = new RequestParams();
+            param.put("token",_model.getToken());
+            param.put("scolaryear",temp.getString("scolaryear"));
+            param.put("codemodule",temp.getString("codemodule"));
+            param.put("codeinstance",temp.getString("codeinstance"));
+            param.put("codeevent",temp.getString("codeevent"));
+            param.put("codeacti",temp.getString("codeacti"));
+            client.post("https://epitech-api.herokuapp.com/event", param, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    Log.d("--GREAT SUCCESS--", "NEW SUB");
+                }
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    Log.d("--FAIL--", "CAN'T SUB");
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
     private void sendToken(final JSONObject temp) {
         try {
             final PopupWindow popup = new PopupWindow(this);
@@ -421,6 +437,25 @@ public class Controleur extends ActionBarActivity
     private void unsubscribeActivities(JSONObject temp) {
         try {
             Log.d("--UNSUB--", temp.getString("acti_title"));
+            RequestParams param = new RequestParams();
+            param.put("token",_model.getToken());
+            Header[] headers = new Header[0];
+            param.put("scolaryear",temp.getString("scolaryear"));
+            param.put("codemodule",temp.getString("codemodule"));
+            param.put("codeinstance",temp.getString("codeinstance"));
+            param.put("codeacti",temp.getString("codeacti"));
+            param.put("codeevent", temp.getString("codeevent"));
+            Log.d("--TEST--", temp.getString("acti_title"));
+            client.delete(this, "https://epitech-api.herokuapp.com/event", headers, param, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    Log.d("--GREAT SUCCESS--", "UN SUB");
+                }
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    Log.d("--FAIL--", "CAN'T UN SUB");
+                }
+            });
         } catch (JSONException e) {
             e.printStackTrace();
         }
