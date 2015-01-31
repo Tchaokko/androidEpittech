@@ -13,18 +13,25 @@ import android.support.v7.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
 import android.text.Layout;
+import android.text.method.DigitsKeyListener;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -344,8 +351,51 @@ public class Controleur extends ActionBarActivity
             sendToken(temp);
     }
 
-    private void sendToken(JSONObject temp) {
+    private void sendToken(final JSONObject temp) {
         try {
+            final PopupWindow popup = new PopupWindow(this);
+            LinearLayout test =  (LinearLayout) findViewById(R.id.planningLayout);
+            EditText text = new EditText(getApplicationContext());
+            text.setKeyListener(DigitsKeyListener.getInstance());
+            text.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    switch (actionId){
+                        case EditorInfo.IME_NULL:
+                            String text = v.getText().toString();
+                            RequestParams param = new RequestParams();
+                            param.put("token",_model.getToken());
+                            try {
+                                param.put("scolaryear",temp.getString("scolaryear"));
+                                param.put("codemodule",temp.getString("codemodule"));
+                                param.put("codeinstance",temp.getString("codeinstance"));
+                                param.put("codeacti",temp.getString("codeacti"));
+                                param.put("codeevent", temp.getString("codeevent"));
+                                param.put("tokenvalidationcode", text);
+                                client.post("https://epitech-api.herokuapp.com/token", Param, new JsonHttpResponseHandler() {
+                                    @Override
+                                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                        popup.dismiss();
+                                        Log.d("--GREAT SUCCESS--", "GOOD TOKEN");
+                                    }
+                                    @Override
+                                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                                        Log.d("--FAIL--", "WRONG TOKEN");
+                                    }
+                                });
+                                } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            Log.d("--QUIT--", "PLEASE");
+                    }
+                    return false;
+                }
+            });
+            popup.setContentView(text);
+            popup.getContentView().setFocusableInTouchMode(true);
+            popup.setFocusable(true);
+            popup.update(50,50,600,100);
+            popup.showAtLocation(test, Gravity.CENTER, 10, 10);
             Log.d("--TOKEN--", temp.getString("acti_title"));
         } catch (JSONException e) {
             e.printStackTrace();
