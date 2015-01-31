@@ -216,7 +216,7 @@ public class Controleur extends ActionBarActivity
         pwd = (EditText) findViewById(R.id.password_field);
         log = (EditText) findViewById(R.id.login_field);
         err = (EditText) findViewById(R.id.error_label);
-/*        _model.setLogin(log.getText().toString());
+        _model.setLogin(log.getText().toString());
         _model.setPassword(pwd.getText().toString());
         Param = new RequestParams();
         Param.put("login", _model.getLogin());
@@ -245,14 +245,7 @@ public class Controleur extends ActionBarActivity
                 _view.put_data_in_view(pwd, "");
                 Log.d("--FAILURE--", "ERROR");
                 }
-              });*/
-        _model.setLogin("lebars_r");
-        _model.setPassword("NonMaisNon");
-        _model.setToken("qtm4re801a77vtqoa64shncke3");
-        logged = true;
-        _model.setIsSetupUser(false);
-        onNavigationDrawerItemSelected(1);
-
+              });
     }
 
     private void aff_profile(){
