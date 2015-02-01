@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.camera2.CameraCharacteristics;
 import android.inputmethodservice.Keyboard;
 import android.os.StrictMode;
+import android.provider.CalendarContract;
 import android.support.annotation.DrawableRes;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -64,7 +67,7 @@ public class Controleur extends ActionBarActivity
     private AsyncHttpClient client = new AsyncHttpClient();
     private Model _model = new Model();
     private My_view _view = new My_view();
-    private Schedule My_schedule = new Schedule();
+   // private Schedule My_schedule = new Schedule();
     private Integer week = 0;
     EditText err;
     EditText pwd;
@@ -272,18 +275,17 @@ public class Controleur extends ActionBarActivity
     private void sortPlanning(JSONArray Planning){
         String      start;
         String      end;
-        LinearLayout layout = (LinearLayout) findViewById(R.id.planningLayout);
-        layout.removeAllViews();
+        _view.remove_view_to_layout((LinearLayout) findViewById(R.id.planningLayout));
         String aff;
-        Integer y = 0;
         for (Integer i = 1; i < Planning.length(); i++) {
             try {
                 final JSONObject temp = Planning.getJSONObject(i);
                 if (temp.getString("module_registered") == "true") {
-                    y++;
                     LinearLayout newLayout = new LinearLayout(getApplicationContext());
                     newLayout.setOrientation(LinearLayout.HORIZONTAL);
                     TextView activityName = new TextView(getApplicationContext());
+                    activityName.setTextColor(Color.BLUE);
+                    newLayout.setBackgroundColor(Color.WHITE);
                     newLayout.addView(activityName);
                     final ImageButton[] subscribe = new ImageButton[3];
                     subscribe[0] = new ImageButton(getApplicationContext());
@@ -302,7 +304,7 @@ public class Controleur extends ActionBarActivity
                             }
                         });
                     }
-                    layout.addView(newLayout);
+                    _view.add_linear_layout_to_linear_layout((LinearLayout) findViewById(R.id.planningLayout), newLayout);
                     start = temp.getString("start");
                     end = temp.getString("end");
                     aff = start + "\n" + end + "\n" + temp.getString("acti_title") + "\n";
@@ -348,7 +350,7 @@ public class Controleur extends ActionBarActivity
     private void sendToken(final JSONObject temp) {
         try {
             final PopupWindow popup = new PopupWindow(this);
-            LinearLayout test =  (LinearLayout) findViewById(R.id.planningLayout);
+            LinearLayout _layout =  (LinearLayout) findViewById(R.id.planningLayout);
             EditText text = new EditText(getApplicationContext());
             text.setKeyListener(DigitsKeyListener.getInstance());
             text.setOnEditorActionListener(new TextView.OnEditorActionListener(){
@@ -386,7 +388,9 @@ public class Controleur extends ActionBarActivity
             popup.getContentView().setFocusableInTouchMode(true);
             popup.setFocusable(true);
             popup.update(50,50,600,100);
-            popup.showAtLocation(test, Gravity.CENTER, 10, 10);
+            if (_layout != null) {
+                popup.showAtLocation(_layout, Gravity.CENTER, 10, 10);
+            }
             Log.d("--TOKEN--", temp.getString("acti_title"));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -429,11 +433,9 @@ public class Controleur extends ActionBarActivity
 
     private void aff_planning(){
         Param = new RequestParams();
-        Integer dayOfWeek;
         Param.put("token", _model.getToken());
-        Param.put("start",My_schedule.getWeekStart(week));
-        Param.put("end",  My_schedule.getWeekEnd(week));
-        My_schedule.setStart(2);
+        Param.put("start",_model.getWeekStart(week));
+        Param.put("end", _model.getWeekEnd(week));
         client.get("https://epitech-api.herokuapp.com/planning", Param, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
@@ -504,8 +506,6 @@ public class Controleur extends ActionBarActivity
                         str += "\n----------\n";
                         _model.putItemInList(str);
                         }
-                    Integer taat = _model.getLengthFromMarks();
-                    Log.d("TEST-LENGTH", taat.toString());
                     str = "";
                    for (int i = _model.getLengthFromMarks() - 1; i >= 0; i--){
                     str  +=  _model.getItemInList(i);
@@ -554,7 +554,7 @@ public class Controleur extends ActionBarActivity
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.controleur, menu);
+            //getMenuInflater().inflate(R.menu.controleur, menu);
             restoreActionBar();
             return true;
         }

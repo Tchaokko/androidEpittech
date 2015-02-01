@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class Model implements Serializable{
     User _user = new User();
     Marks _marks = new Marks();
+    Schedule _schedule = new Schedule();
 
     /*
      * Setter getter User
@@ -101,6 +102,7 @@ public class Model implements Serializable{
     public void putItemInList(String item){
         _marks.putItemInList(item);
     }
+
     public String getItemInList(int i){
         return _marks.getItemInList(i);
     }
@@ -109,4 +111,15 @@ public class Model implements Serializable{
     }
     public ArrayList<String> getListFromMark(){
         return _marks.getList();}
+
+/*
+ * Setter Getter Schedule
+ */
+    public String getWeekStart(int add){
+    return _schedule.getWeekStart(add);
+}
+    public String getWeekEnd(int add){
+        return _schedule.getWeekEnd(add);
+    }
+
 }

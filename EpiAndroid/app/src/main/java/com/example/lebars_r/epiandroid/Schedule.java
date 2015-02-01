@@ -8,14 +8,6 @@ import java.util.Calendar;
  * Created by the cambio on 31/01/2015.
  */
 public class Schedule {
-    public Integer getStart() {
-        return start;
-    }
-
-    public void setStart(Integer start) {
-        this.start = start;
-    }
-
     public String getWeekStart(int add){
         Calendar calendar = Calendar.getInstance();
         Integer dayOfWeek;
@@ -28,7 +20,6 @@ public class Schedule {
         String weekStart = year.toString() + "-" + month.toString() + "-" + day.toString();
         return (weekStart);
     }
-
     public String getWeekEnd(int add){
         Calendar calendar = Calendar.getInstance();
         Integer dayOfWeek;
@@ -42,6 +33,4 @@ public class Schedule {
         String weekEnd = year.toString() + "-" + month.toString() + "-" + day.toString();
         return (weekEnd);
     }
-
-    Integer start;
 }
