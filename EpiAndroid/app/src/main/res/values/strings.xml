@@ -21,7 +21,12 @@
     <string name="title_section4">Grades</string>
     <string name="LastWeek">last_week.png</string>
     <string name="nextWeek">nextWeek</string>
+
     <string name="Trombi">Trombi</string>
     <string name="Susie">Susie</string>
+
+    <string name="corner_left_up">Corner_left_up</string>
+    <string name="centre_horizontal">centre_horizontal</string>
+    <string name="corner_right_up">corner_right_up</string>
 
 </resources>

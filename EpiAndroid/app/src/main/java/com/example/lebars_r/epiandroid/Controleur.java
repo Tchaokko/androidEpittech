@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.camera2.CameraCharacteristics;
 import android.inputmethodservice.Keyboard;
 import android.os.StrictMode;
+import android.provider.CalendarContract;
 import android.support.annotation.DrawableRes;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -64,7 +67,7 @@ public class Controleur extends ActionBarActivity
     private AsyncHttpClient client = new AsyncHttpClient();
     private Model _model = new Model();
     private My_view _view = new My_view();
-    private Schedule My_schedule = new Schedule();
+   // private Schedule My_schedule = new Schedule();
     private Integer week = 0;
     EditText err;
     EditText pwd;
@@ -270,7 +273,7 @@ public class Controleur extends ActionBarActivity
     private void affSusie(JSONArray susie){
         String      start;
         String      end;
-        LinearLayout layout = (LinearLayout) findViewById(R.id.planningLayout);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.susieLayout);
         layout.removeAllViews();
         String aff;
         for (Integer i = 1; i < susie.length(); i++) {
@@ -280,7 +283,7 @@ public class Controleur extends ActionBarActivity
                     newLayout.setOrientation(LinearLayout.HORIZONTAL);
                     TextView activityName = new TextView(getApplicationContext());
                     newLayout.addView(activityName);
-                    final ImageButton[] subscribe = new ImageButton[3];
+                    final ImageButton[] subscribe = new ImageButton[2];
                     subscribe[0] = new ImageButton(getApplicationContext());
                     subscribe[0].setImageResource(R.drawable.sub);
                     subscribe[1] = new ImageButton(getApplicationContext());
@@ -302,7 +305,7 @@ public class Controleur extends ActionBarActivity
                     layout.addView(newLayout);
                     start = temp.getString("start");
                     end = temp.getString("end");
-                    aff = start + "\n" + end + "\n" + temp.getString("acti_title") + "\n";
+                    aff = start + "\n" + end + "\n" + temp.getString("title") + "\n";
                     _view.put_data_in_view(activityName, aff);
             } catch (JSONException | NullPointerException e) {
                 e.printStackTrace();
@@ -313,6 +316,26 @@ public class Controleur extends ActionBarActivity
     private void start_susie(){
         RequestParams param = new RequestParams();
         param.put("token",_model.getToken());
+        param.put("start",_model.getWeekStart(0));
+        param.put("end",_model.getWeekEnd(0));
+       param.put("get","all");
+        Log.d("--START SUSIE--", "OK");
+        client.get("https://epitech-api.herokuapp.com/susies", param, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.d("--START SUSIE--", "OK");
+                affSusie(response);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Log.d("--START SUSIE--", "KO");
+                err.setVisibility(View.VISIBLE);
+            }
+        });
+
     }
 
     private void susiePressed(JSONObject temp, Integer finalIndex) throws JSONException {
@@ -320,7 +343,7 @@ public class Controleur extends ActionBarActivity
         Header[] headers = new Header[0];
         param.put("token",_model.getToken());
         param.put("id",temp.getString("id"));
-        param.put("calendar_id", (temp.getJSONObject("calendar").getString("id")));
+        param.put("calendar_id", temp.getString("id_calendar"));
         if (finalIndex == 0){
             client.post("https://epitech-api.herokuapp.com/event", param, new JsonHttpResponseHandler() {
                 @Override
@@ -328,8 +351,7 @@ public class Controleur extends ActionBarActivity
                 }
 
                 @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                }
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {                }
             });
         }
         else if (finalIndex == 1){
@@ -348,18 +370,17 @@ public class Controleur extends ActionBarActivity
     private void sortPlanning(JSONArray Planning){
         String      start;
         String      end;
-        LinearLayout layout = (LinearLayout) findViewById(R.id.planningLayout);
-        layout.removeAllViews();
+        _view.remove_view_to_layout((LinearLayout) findViewById(R.id.planningLayout));
         String aff;
-        Integer y = 0;
         for (Integer i = 1; i < Planning.length(); i++) {
             try {
                 final JSONObject temp = Planning.getJSONObject(i);
                 if (temp.getString("module_registered") == "true") {
-                    y++;
                     LinearLayout newLayout = new LinearLayout(getApplicationContext());
                     newLayout.setOrientation(LinearLayout.HORIZONTAL);
                     TextView activityName = new TextView(getApplicationContext());
+                    activityName.setTextColor(Color.BLUE);
+                    newLayout.setBackgroundColor(Color.WHITE);
                     newLayout.addView(activityName);
                     final ImageButton[] subscribe = new ImageButton[3];
                     subscribe[0] = new ImageButton(getApplicationContext());
@@ -378,7 +399,7 @@ public class Controleur extends ActionBarActivity
                             }
                         });
                     }
-                    layout.addView(newLayout);
+                    _view.add_linear_layout_to_linear_layout((LinearLayout) findViewById(R.id.planningLayout), newLayout);
                     start = temp.getString("start");
                     end = temp.getString("end");
                     aff = start + "\n" + end + "\n" + temp.getString("acti_title") + "\n";
@@ -424,7 +445,7 @@ public class Controleur extends ActionBarActivity
     private void sendToken(final JSONObject temp) {
         try {
             final PopupWindow popup = new PopupWindow(this);
-            LinearLayout test =  (LinearLayout) findViewById(R.id.planningLayout);
+            LinearLayout _layout =  (LinearLayout) findViewById(R.id.planningLayout);
             EditText text = new EditText(getApplicationContext());
             text.setKeyListener(DigitsKeyListener.getInstance());
             text.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -442,7 +463,7 @@ public class Controleur extends ActionBarActivity
                                 param.put("codeacti", temp.getString("codeacti"));
                                 param.put("codeevent", temp.getString("codeevent"));
                                 param.put("tokenvalidationcode", text);
-                                client.post("https://epitech-api.herokuapp.com/token", Param, new JsonHttpResponseHandler() {
+                                client.post("https://epitech-api.herokuapp.com/token", param, new JsonHttpResponseHandler() {
                                     @Override
                                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                                         popup.dismiss();
@@ -462,8 +483,11 @@ public class Controleur extends ActionBarActivity
             popup.setContentView(text);
             popup.getContentView().setFocusableInTouchMode(true);
             popup.setFocusable(true);
-            popup.update(50, 50, 600, 100);
-            popup.showAtLocation(test, Gravity.CENTER, 10, 10);
+
+            popup.update(50,50,600,100);
+            if (_layout != null) {
+                popup.showAtLocation(_layout, Gravity.CENTER, 10, 10);
+            }
             Log.d("--TOKEN--", temp.getString("acti_title"));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -507,9 +531,8 @@ public class Controleur extends ActionBarActivity
     private void aff_planning(){
         Param = new RequestParams();
         Param.put("token", _model.getToken());
-        Param.put("start",My_schedule.getWeekStart(week));
-        Param.put("end",  My_schedule.getWeekEnd(week));
-        My_schedule.setStart(2);
+        Param.put("start",_model.getWeekStart(week));
+        Param.put("end", _model.getWeekEnd(week));
         client.get("https://epitech-api.herokuapp.com/planning", Param, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
@@ -556,7 +579,7 @@ public class Controleur extends ActionBarActivity
                 break;
             case 5:
                 fragment = Susie.newInstance();
-                affSusie();
+                start_susie();
                 break;
 
         }
@@ -586,9 +609,8 @@ public class Controleur extends ActionBarActivity
                         str += data.getString("date") + "\n";
                         str += "\n----------\n";
                         _model.putItemInList(str);
-                    }
-                    Integer taat = _model.getLengthFromMarks();
-                    Log.d("TEST-LENGTH", taat.toString());
+
+                        }
                     str = "";
                     for (int i = _model.getLengthFromMarks() - 1; i >= 0; i--) {
                         str += _model.getItemInList(i);
@@ -646,141 +668,139 @@ public class Controleur extends ActionBarActivity
             final EditText textLogin = (EditText) findViewById(R.id.search_login);
             textLogin.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    switch (actionId) {
-                        case EditorInfo.IME_ACTION_DONE:
-                            Log.d("--INSEARCH--", "YAY");
-                            Param = new RequestParams();
-                            Param.put("token", _model.getToken());
-                            Param.put("user", textLogin.getText());
-                            client.get("https://epitech-api.herokuapp.com/user", Param, new JsonHttpResponseHandler() {
-                                @Override
-                                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                    super.onSuccess(statusCode, headers, response);
-                                    try {
-                                        Log.d("--RESPONSE--", response.toString());
-                                        Log.d("--IN SUCCESS--", "yay");
-                                        String login = response.getString("login");
-                                        String Title = response.getString("title");
-                                        String promo = response.getString("promo");
-                                        String location = response.getString("location");
-                                        getPicture(login, R.id.trombi_picture);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                switch (actionId) {
+                    case EditorInfo.IME_ACTION_DONE:
+                        Log.d("--INSEARCH--", "YAY");
+                        Param = new RequestParams();
+                        Param.put("token", _model.getToken());
+                        Param.put("user", textLogin.getText());
+                        client.get("https://epitech-api.herokuapp.com/user", Param, new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                super.onSuccess(statusCode, headers, response);
+                                try {
+                                    Log.d("--RESPONSE--", response.toString());
+                                    Log.d("--IN SUCCESS--", "yay");
+                                    String login = response.getString("login");
+                                    String Title = response.getString("title");
+                                    String promo = response.getString("promo");
+                                    String location = response.getString("location");
+                                    getPicture(login, R.id.trombi_picture);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
+                            }
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                                super.onFailure(statusCode, headers, throwable, errorResponse);
+                                Log.d("--IN FAIL--", "yay");
 
-                                @Override
-                                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                                    Log.d("--IN FAIL--", "yay");
-
-                                    err.setVisibility(View.VISIBLE);
-                                }
-                            });
-
-
+                                err.setVisibility(View.VISIBLE);
+                            }
+                        });
                     }
                     return false;
                 }
             });
-            }
-                public void onSectionAttached(int number) {
-                    switch (number) {
-                        case 1:
-                            mTitle = getString(R.string.title_section1);
-                            break;
-                        case 2:
-                            mTitle = getString(R.string.title_section2);
-                            break;
-                        case 3:
-                            mTitle = getString(R.string.title_section3);
-                            break;
-                        case 4:
-                            mTitle = getString(R.string.title_section4);
-                            break;
-                        case 5:
-                            mTitle = getString(R.string.Trombi);
+        }
 
-                    }
-                }
-
-                public void restoreActionBar() {
-                    ActionBar actionBar = getSupportActionBar();
-                    actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-                    actionBar.setDisplayShowTitleEnabled(true);
-                    actionBar.setTitle(mTitle);
-                }
-
-
-                @Override
-                public boolean onCreateOptionsMenu(Menu menu) {
-                    if (!mNavigationDrawerFragment.isDrawerOpen()) {
-                        // Only show items in the action bar relevant to this screen
-                        // if the drawer is not showing. Otherwise, let the drawer
-                        // decide what to show in the action bar.
-                        getMenuInflater().inflate(R.menu.controleur, menu);
-                        restoreActionBar();
-                        return true;
-                    }
-                    return super.onCreateOptionsMenu(menu);
-                }
-
-
-                @Override
-                public boolean onOptionsItemSelected(MenuItem item) {
-                    // Handle action bar item clicks here. The action bar will
-                    // automatically handle clicks on the Home/Up button, so long
-                    // as you specify a parent activity in AndroidManifest.xml.
-                    int id = item.getItemId();
-
-                    //noinspection SimplifiableIfStatement
-                    if (id == R.id.action_settings) {
-                        return true;
-                    }
-
-                    return super.onOptionsItemSelected(item);
-                }
-
-                /**
-                 * A placeholder fragment containing a simple view.
-                 */
-                public static class PlaceholderFragment extends Fragment {
-                    /**
-                     * The fragment argument representing the section number for this
-                     * fragment.
-                     */
-                    private static final String ARG_SECTION_NUMBER = "section_number";
-
-                    /**
-                     * Returns a new instance of this fragment for the given section
-                     * number.
-                     */
-                    public static PlaceholderFragment newInstance(int sectionNumber) {
-                        PlaceholderFragment fragment = new PlaceholderFragment();
-                        Bundle args = new Bundle();
-                        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-                        fragment.setArguments(args);
-                        return fragment;
-                    }
-
-                    public PlaceholderFragment() {
-                    }
-
-                    @Override
-                    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                             Bundle savedInstanceState) {
-                        View rootView = inflater.inflate(R.layout.fragment_controleur, container, false);
-                        return rootView;
-                    }
-
-                    @Override
-                    public void onAttach(Activity activity) {
-                        super.onAttach(activity);
-                        ((Controleur) activity).onSectionAttached(
-                                getArguments().getInt(ARG_SECTION_NUMBER));
-                    }
-                }
+        public void onSectionAttached(int number) {
+            switch (number) {
+                case 1:
+                    mTitle = getString(R.string.title_section1);
+                    break;
+                case 2:
+                    mTitle = getString(R.string.title_section2);
+                    break;
+                case 3:
+                    mTitle = getString(R.string.title_section3);
+                    break;
+                case 4:
+                    mTitle = getString(R.string.title_section4);
+                    break;
+                case 5:
+                    mTitle = getString(R.string.Trombi);
 
             }
+        }
+
+        public void restoreActionBar() {
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setTitle(mTitle);
+        }
+
+
+        @Override
+        public boolean onCreateOptionsMenu(Menu menu) {
+            if (!mNavigationDrawerFragment.isDrawerOpen()) {
+                // Only show items in the action bar relevant to this screen
+                // if the drawer is not showing. Otherwise, let the drawer
+                // decide what to show in the action bar.
+                getMenuInflater().inflate(R.menu.controleur, menu);
+                restoreActionBar();
+                return true;
+            }
+            return super.onCreateOptionsMenu(menu);
+        }
+
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            // Handle action bar item clicks here. The action bar will
+            // automatically handle clicks on the Home/Up button, so long
+            // as you specify a parent activity in AndroidManifest.xml.
+            int id = item.getItemId();
+
+            //noinspection SimplifiableIfStatement
+            if (id == R.id.action_settings) {
+                return true;
+            }
+
+            return super.onOptionsItemSelected(item);
+        }
+
+        /**
+         * A placeholder fragment containing a simple view.
+         */
+        public static class PlaceholderFragment extends Fragment {
+            /**
+             * The fragment argument representing the section number for this
+             * fragment.
+             */
+            private static final String ARG_SECTION_NUMBER = "section_number";
+
+            /**
+             * Returns a new instance of this fragment for the given section
+             * number.
+             */
+            public static PlaceholderFragment newInstance(int sectionNumber) {
+                PlaceholderFragment fragment = new PlaceholderFragment();
+                Bundle args = new Bundle();
+                args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+                fragment.setArguments(args);
+                return fragment;
+            }
+
+            public PlaceholderFragment() {
+            }
+
+            @Override
+            public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                     Bundle savedInstanceState) {
+                View rootView = inflater.inflate(R.layout.fragment_controleur, container, false);
+                return rootView;
+            }
+
+            @Override
+            public void onAttach(Activity activity) {
+                super.onAttach(activity);
+                ((Controleur) activity).onSectionAttached(
+                        getArguments().getInt(ARG_SECTION_NUMBER));
+            }
+        }
+
+    }
 

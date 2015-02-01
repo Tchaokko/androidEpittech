@@ -12,9 +12,8 @@
             android:ems="10"
             android:id="@+id/password_field"
             android:background="#ffe2daff"
-            android:layout_below="@+id/password_label"
-            android:layout_alignLeft="@+id/login_field"
-            android:layout_alignStart="@+id/login_field" />
+            android:layout_above="@+id/button3"
+            android:layout_centerHorizontal="true" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -23,7 +22,7 @@
             android:ems="10"
             android:id="@+id/login_field"
             android:background="#ffe2daff"
-            android:layout_below="@+id/login_label"
+            android:layout_above="@+id/password_label"
             android:layout_centerHorizontal="true" />
 
         <EditText
@@ -32,8 +31,7 @@
             android:id="@+id/login_label"
             android:editable="false"
             android:text="@string/string_log_label"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/button3"
+            android:layout_above="@+id/login_field"
             android:layout_alignLeft="@+id/login_field"
             android:layout_alignStart="@+id/login_field" />
 
@@ -43,7 +41,7 @@
             android:id="@+id/password_label"
             android:editable="false"
             android:text="@string/string_pwd_label"
-            android:layout_below="@+id/login_field"
+            android:layout_above="@+id/password_field"
             android:layout_alignLeft="@+id/password_field"
             android:layout_alignStart="@+id/password_field" />
 
@@ -53,24 +51,87 @@
             android:text="@string/LogButton"
             android:id="@+id/button3"
             android:onClick="LogMe"
-            android:layout_below="@+id/password_field"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="31dp"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/error_label"
             android:editable="false"
-            android:layout_marginTop="41dp"
             android:visibility="invisible"
             android:textColor="#ffff0000"
-            android:layout_below="@+id/button3"
-            android:layout_alignLeft="@+id/login_label"
-            android:layout_alignStart="@+id/login_label"
             android:text="@string/error_msg"
             android:background="#ffffe000"
-            android:layout_gravity="center_horizontal|bottom" />
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_above="@+id/textView2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="72dp" />
+
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/imageView"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:contentDescription="@string/corner_left_up"
+            android:background="#ffffffff" />
+
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/imageView3"
+            android:contentDescription="@string/corner_right_up"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:background="#ffffffff" />
+
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/textView2"
+            android:contentDescription="@string/corner_left_up"
+            android:background="#ffffffff"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/textView"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/imageView"
+            android:layout_toLeftOf="@+id/imageView3"
+            android:layout_toStartOf="@+id/imageView3"
+            android:autoText="false"
+            android:background="#ffffffff" />
+
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/textView3"
+            android:contentDescription="@string/corner_left_up"
+            android:background="#ffffffff"
+            android:layout_alignTop="@+id/textView2"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/textView4"
+            android:autoText="false"
+            android:background="#ffffffff"
+            android:layout_alignBottom="@+id/textView2"
+            android:layout_toLeftOf="@+id/textView3"
+            android:layout_toRightOf="@+id/textView2"
+            android:layout_toEndOf="@+id/textView2" />
+
     </RelativeLayout>
 
