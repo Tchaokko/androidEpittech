@@ -581,12 +581,50 @@ public class Controleur extends ActionBarActivity
                 fragment = Susie.newInstance();
                 start_susie();
                 break;
-
+            case 6:
+                fragment = Project.newInstance();
+                aff_project();
+                break;
         }
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
                 .commit();
+    }
+
+    private void aff_project() {
+        RequestParams Param = new RequestParams();
+        Param.put("token", _model.getToken());
+        client.get("https://epitech-api.herokuapp.com/projects", Param, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                JSONObject data;
+                try {
+                    String str = "";
+                    for (int i = 0; i < response.length(); ++i) {
+                        data = response.getJSONObject(i);
+                        if (data.getString("project") != "null") {
+                            str += data.getString("project") + "\n";
+                            str += data.getString("acti_title") + "\n";
+                            str += data.getString("title_module") + "\n";
+                            str += data.getString("end_acti") + "\n";
+                            str += data.getString("begin_acti") + "\n";
+                            str += "\n----------\n";
+                        }
+                    }
+                    _view.put_data_in_view((TextView) findViewById(R.id.project_text), str);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
     }
 
     private void aff_grade() {

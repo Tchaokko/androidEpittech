@@ -28,5 +28,6 @@
     <string name="corner_left_up">Corner_left_up</string>
     <string name="centre_horizontal">centre_horizontal</string>
     <string name="corner_right_up">corner_right_up</string>
+    <string name="Project">Project</string>
 
 </resources>
