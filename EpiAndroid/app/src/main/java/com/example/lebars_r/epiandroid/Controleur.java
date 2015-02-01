@@ -91,10 +91,8 @@ public class Controleur extends ActionBarActivity
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     super.onSuccess(statusCode, headers, response);
-                    Log.d("--SUCCESS--", "picture");
                     try {
                         _model.setPhoto(response.getString("url").replaceAll(" ", ""));
-                        Log.d("--URL--", _model.getPhoto());
                         URL url = new URL(_model.getPhoto());
                         Object data = url.getContent();
                         InputStream stream = (InputStream) data;
@@ -113,7 +111,6 @@ public class Controleur extends ActionBarActivity
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     super.onFailure(statusCode, headers, responseString, throwable);
-                    Log.d("--ERROR--", "picture");
                     _model.setFailSetup(true);
                 }
             });
@@ -127,7 +124,6 @@ public class Controleur extends ActionBarActivity
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                     super.onSuccess(statusCode, headers, response);
-                    Log.d("--SUCCESS--", "INFO BEGIN");
                     JSONObject data;
 
                     try {
@@ -149,7 +145,6 @@ public class Controleur extends ActionBarActivity
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     super.onFailure(statusCode, headers, responseString, throwable);
-                    Log.d("--FAILURE INFOS--", "Infos failure");
                     _model.setFailSetup(true);
                 }
             });
@@ -192,13 +187,11 @@ public class Controleur extends ActionBarActivity
 
     private void handleInfos() {
         RequestParams Param = new RequestParams();
-        Log.d("--TOKEN--", _model.getToken());
         Param.put("token", _model.getToken());
         client.post("https://epitech-api.herokuapp.com/infos", Param, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                Log.d("--SUCCESS--", "INFO BEGIN");
                 handle_token_info(response);
                 handle_token_current(response);
             }
@@ -206,7 +199,6 @@ public class Controleur extends ActionBarActivity
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
-                Log.d("--FAILURE INFOS--", "Infos failure");
                 _model.setFailSetup(true);
             }
         });
@@ -230,10 +222,8 @@ public class Controleur extends ActionBarActivity
                 err.setVisibility(View.INVISIBLE);
                 logged = true;
                 _model.setIsSetupUser(false);
-                Log.d("--SUCCESS--", "SUCCESS");
                 try {
                     _model.setToken(response.getString("token"));
-                    Log.d("--TOKEN--", _model.getToken());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -245,7 +235,6 @@ public class Controleur extends ActionBarActivity
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 err.setVisibility(View.VISIBLE);
                 _view.put_data_in_view(pwd, "");
-                Log.d("--FAILURE--", "ERROR");
             }
         });
     }
@@ -281,12 +270,8 @@ public class Controleur extends ActionBarActivity
 
 
     private void sortPlanning(JSONArray Planning){
-        //String aff_planning;
         String      start;
         String      end;
-/*        Calendar cal = Calendar.getInstance();
-        List<List<String>> data = new ArrayList<>();
-        List<List<JSONObject>> myList;*/
         LinearLayout layout = (LinearLayout) findViewById(R.id.planningLayout);
         layout.removeAllViews();
         String aff;
@@ -303,7 +288,6 @@ public class Controleur extends ActionBarActivity
                     final ImageButton[] subscribe = new ImageButton[3];
                     subscribe[0] = new ImageButton(getApplicationContext());
                     subscribe[0].setImageResource(R.drawable.sub);
-                    //subscribe[0].setBackgroundResource();
                     subscribe[1] = new ImageButton(getApplicationContext());
                     subscribe[1].setImageResource(R.drawable.unsub);
                     subscribe[2] = new ImageButton(getApplicationContext());
@@ -328,7 +312,6 @@ public class Controleur extends ActionBarActivity
                 e.printStackTrace();
             }
         }
-        Log.d("--SIZE--",y.toString() );
     }
 
     private void subscribePressed(JSONObject temp, Integer finalIndex) {
@@ -352,12 +335,10 @@ public class Controleur extends ActionBarActivity
             client.post("https://epitech-api.herokuapp.com/event", param, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    Log.d("--GREAT SUCCESS--", "NEW SUB");
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    Log.d("--FAIL--", "CAN'T SUB");
                 }
             });
         } catch (JSONException e) {
@@ -389,17 +370,14 @@ public class Controleur extends ActionBarActivity
                                     @Override
                                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                                         popup.dismiss();
-                                        Log.d("--GREAT SUCCESS--", "GOOD TOKEN");
                                     }
                                     @Override
                                     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                        Log.d("--FAIL--", "WRONG TOKEN");
                                     }
                                 });
                                 } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            Log.d("--QUIT--", "PLEASE");
                     }
                     return false;
                 }
@@ -417,7 +395,6 @@ public class Controleur extends ActionBarActivity
 
     private void unsubscribeActivities(JSONObject temp) {
         try {
-            Log.d("--UNSUB--", temp.getString("acti_title"));
             RequestParams param = new RequestParams();
             param.put("token",_model.getToken());
             Header[] headers = new Header[0];
@@ -426,16 +403,13 @@ public class Controleur extends ActionBarActivity
             param.put("codeinstance",temp.getString("codeinstance"));
             param.put("codeacti",temp.getString("codeacti"));
             param.put("codeevent", temp.getString("codeevent"));
-            Log.d("--TEST--", temp.getString("acti_title"));
             client.delete(this, "https://epitech-api.herokuapp.com/event", headers, param, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    Log.d("--GREAT SUCCESS--", "UN SUB");
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    Log.d("--FAIL--", "CAN'T UN SUB");
                 }
             });
         } catch (JSONException e) {
@@ -444,13 +418,11 @@ public class Controleur extends ActionBarActivity
     }
 
     public void prevWeek(View v){
-            Log.d("--PREVWEEK--", "check");
             week -= 1;
             aff_planning();
         }
 
     public void nextWeek(View v){
-        Log.d("--NEXTWEEK--", "check");
         week +=1;
         aff_planning();
     }
@@ -466,9 +438,7 @@ public class Controleur extends ActionBarActivity
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
-                Log.d("--SUCCESS--", "SUCCESS");
                 sortPlanning(response);
-                Log.d("--TOKEN--", _model.getToken());
 
             }
 
@@ -476,7 +446,6 @@ public class Controleur extends ActionBarActivity
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 err.setVisibility(View.VISIBLE);
-                Log.d("--FAILURE--", "ERROR");
             }
         });
 
@@ -551,7 +520,6 @@ public class Controleur extends ActionBarActivity
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
-                Log.d("--TEST--", "1");
             }
         });
     }

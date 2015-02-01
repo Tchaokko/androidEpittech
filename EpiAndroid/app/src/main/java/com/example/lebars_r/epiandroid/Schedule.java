@@ -26,7 +26,6 @@ public class Schedule {
         Integer month = calendar.get(Calendar.MONTH) + 1;
         Integer day = calendar.get(Calendar.DAY_OF_MONTH);
         String weekStart = year.toString() + "-" + month.toString() + "-" + day.toString();
-        Log.d("--WEEKSTART--", weekStart);
         return (weekStart);
     }
 
@@ -41,7 +40,6 @@ public class Schedule {
         Integer month = calendar.get(Calendar.MONTH) + 1;
         Integer day = calendar.get(Calendar.DAY_OF_MONTH);
         String weekEnd = year.toString() + "-" + month.toString() + "-" + day.toString();
-        Log.d("--WEEKEND--", weekEnd);
         return (weekEnd);
     }
 
