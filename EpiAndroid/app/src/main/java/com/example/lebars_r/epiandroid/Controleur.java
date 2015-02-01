@@ -65,7 +65,7 @@ public class Controleur extends ActionBarActivity
     private Model _model = new Model();
     private My_view _view = new My_view();
     private Schedule My_schedule = new Schedule();
-
+    private Integer week = 0;
     EditText err;
     EditText pwd;
     EditText log;
@@ -288,6 +288,7 @@ public class Controleur extends ActionBarActivity
         List<List<String>> data = new ArrayList<>();
         List<List<JSONObject>> myList;*/
         LinearLayout layout = (LinearLayout) findViewById(R.id.planningLayout);
+        layout.removeAllViews();
         String aff;
         Integer y = 0;
         for (Integer i = 1; i < Planning.length(); i++) {
@@ -441,13 +442,24 @@ public class Controleur extends ActionBarActivity
         }
     }
 
+    public void prevWeek(View v){
+            Log.d("--PREVWEEK--", "check");
+            week -= 1;
+            aff_planning();
+        }
+
+    public void nextWeek(View v){
+        Log.d("--NEXTWEEK--", "check");
+        week +=1;
+        aff_planning();
+    }
+
     private void aff_planning(){
         Param = new RequestParams();
+        Integer dayOfWeek;
         Param.put("token", _model.getToken());
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyy-MM-dd");
-        Param.put("start", "2015-02-02");
-        Param.put("end", "2015-02-08");
+        Param.put("start",My_schedule.getWeekStart(week));
+        Param.put("end",  My_schedule.getWeekEnd(week));
         My_schedule.setStart(2);
         client.get("https://epitech-api.herokuapp.com/planning", Param, new JsonHttpResponseHandler() {
             @Override
