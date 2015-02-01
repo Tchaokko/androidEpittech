@@ -21,5 +21,7 @@
     <string name="title_section4">Grades</string>
     <string name="LastWeek">last_week.png</string>
     <string name="nextWeek">nextWeek</string>
+    <string name="Trombi">Trombi</string>
+    <string name="Susie">Susie</string>
 
 </resources>
