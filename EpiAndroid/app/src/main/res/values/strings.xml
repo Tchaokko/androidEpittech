@@ -19,5 +19,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="error_msg">Connexion error</string>
     <string name="title_section4">Grades</string>
+    <string name="LastWeek">last_week.png</string>
+    <string name="nextWeek">nextWeek</string>
 
 </resources>

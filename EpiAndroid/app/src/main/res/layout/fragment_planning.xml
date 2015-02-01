@@ -2,22 +2,53 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" tools:context="com.example.lebars_r.epiandroid.Planning">
 
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/scrollPlanning"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" >
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:weightSum="1">
 
-        <LinearLayout
-            android:orientation="vertical"
+        <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/planningLayout"></LinearLayout>
-    </ScrollView>
+            android:layout_height="57dp"
+            android:background="#ff78b0ff"
+            android:nestedScrollingEnabled="false">
+
+            <ImageButton
+                android:layout_width="68dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/Prev"
+                android:contentDescription="@string/LastWeek"
+                android:background="@drawable/last_week"
+                android:onClick="prevWeek" />
+
+            <ImageButton
+                android:layout_width="68dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/Next"
+                android:nestedScrollingEnabled="true"
+                android:background="@drawable/next_week"
+                android:contentDescription="@string/nextWeek"
+                android:layout_gravity="right"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBottom="@+id/Prev"
+                android:onClick="nextWeek" />
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/scrollPlanning">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/planningLayout"></LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
 
 </RelativeLayout>
